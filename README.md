@@ -84,3 +84,11 @@ Will insert initial geometries and images files.
 # License
 
 This product is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, version 2.1.
+
+
+For more information about the algorithms and p5js, please visit those URLs.
+
+https://github.com/inconvergent/differential-line
+https://inconvergent.net/generative/differential-line/
+
+https://p5js.org/
