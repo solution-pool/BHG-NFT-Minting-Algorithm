@@ -98,7 +98,8 @@ class Segments {
   }
 
   __add_edge(v1,  v2) {
-  
+      v1 = parseInt(v1)
+      v2 = parseInt(v2)
       const edgeNumber = this.edgeNumber
       if (this.__valid_new_edge(v1,v2)<0) {
           throw new Error("invalid vertex in __add_edge v1, v2, " + v1 + ',' + v2)
@@ -785,7 +786,7 @@ class Segments {
       ay = this.Y[v1] - this.Y[v2]
       by = this.Y[v3] - this.Y[v4]
 
-      t += fabs(ax*by - ay*bx)*0.5
+      t += Math.fabs(ax*by - ay*bx)*0.5
     }
     if (e3>-1) {
       v1 = this.EV[2*e3]
@@ -796,7 +797,7 @@ class Segments {
       ay = this.Y[v1] - this.Y[v2]
       by = this.Y[v3] - this.Y[v4]
 
-      t += fabs(ax*by - ay*bx)*0.5
+      t += Math.fabs(ax*by - ay*bx)*0.5
     }
 
     if (t<=0) {
