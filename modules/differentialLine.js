@@ -3,9 +3,9 @@ class DifferentialLine extends Segments {
     constructor(nmax, zonewidth, nearl, farl) {
         super(nmax, zonewidth)
 
-        this.SX = []
-        this.SY = []
-        this.SD = []
+        this.SX = new Array()
+        this.SY = new Array()
+        this.SD = new Array()
         this.vertices = []
 
         this.nearl = nearl
