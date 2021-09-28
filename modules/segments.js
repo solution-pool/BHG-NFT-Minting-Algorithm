@@ -208,22 +208,15 @@ class Segments {
   }
 
   __safe_vertex_positions(limit) {
-      
       let vnum = this.vnum
-
       for (let i = 0 ; i < vnum ; i ++) {
-
-          if (this.X[i]<limit || this.X[i]>1.-limit) {
-
-              return -1
+          if( this.X[i] < ((REALSIZE - SIZE) / 2 / REALSIZE - limit) || this.X[i] > (1 - (REALSIZE - SIZE) / 2 / REALSIZE + limit) ) {
+            return - 1
           }
-
-          if (this.Y[i]<limit || this.Y[i]>1-limit) {
-
+          if(this.Y[i] < ((REALSIZE - SIZE) / 2 / REALSIZE - limit) || this.Y[i] > (1 - (REALSIZE - SIZE) / 2 / REALSIZE + limit)) {
               return -1
           }
       }
-
       return 1
   }   
 

@@ -6,7 +6,6 @@ class DifferentialLine extends Segments {
         this.SX = new Array()
         this.SY = new Array()
         this.SD = new Array()
-        this.vertices = []
 
         this.nearl = nearl
         this.farl = farl
@@ -14,8 +13,8 @@ class DifferentialLine extends Segments {
 
     optimize_position(step) {
         let vertices = new Array()
-        
-        for(let v = 0; v < this.vnum; v ++ ) {
+        const vnumCount = this.vnum
+        for(let v = 0; v < vnumCount; v ++ ) {
             this.SX[v] = 0.0
             this.SY[v] = 0.0
 
@@ -32,12 +31,10 @@ class DifferentialLine extends Segments {
                 step,
                 this.SX,
                 this.SY
-            ) 
-        }
+            )
 
-        vertices = undefined
-        
-        for (let v = 0; v < this.vnum ; v ++) {
+        }
+        for (let v = 0; v < vnumCount ; v ++) {
             if(this.VA[v] < 0) {
                 continue
             }
@@ -45,12 +42,16 @@ class DifferentialLine extends Segments {
             this.X[v] = this.X[v] + this.SX[v]
             this.Y[v] = this.Y[v] + this.SY[v]
         }
-        for(let v = 0; v < this.vnum; v ++) {
+
+        for(let v = 0; v < vnumCount; v ++) {
             if(this.VA[v] < 0) {
                 continue
             }
-
-            this.zonemap.__update_v(v)
+            try {
+                this.zonemap.__update_v(v)
+            }
+            catch {
+            }
         }
     }
 

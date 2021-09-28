@@ -1,18 +1,3 @@
-// from __future__ import division
-
-// cimport cython
-// from libc.stdlib cimport malloc, free, realloc
-// from libc.math cimport sqrt
-
-// from helpers cimport long_array_init
-// from helpers cimport double_array_init
-
-// import numpy as np
-// cimport numpy as np
-
-let SIZE = 1024
-
-
 class Zonemap {
 
   constructor(nz) {
@@ -109,9 +94,7 @@ class Zonemap {
   __extend_zv_of_zone(z) {
 
     let new_size = z.size*2
-    // // let new_zv = <long *>realloc(z.ZV, new_size*sizeof(long))
     const new_zv = []
-    // if (new_zv) {
       z.ZV = new_zv;
       z.size = new_size
       if (new_size>this.greatest_zone_size) {
@@ -126,22 +109,16 @@ class Zonemap {
     v1 = parseInt(v1)
 
     let z = this.Z[z1]
-    if(z == undefined) {
-      this.VZ = []
-      setup()
-      return -1
-    } else {
-      for (let i = 0; i < z.count ;  i ++) {
+    for (let i = 0; i < z.count ;  i ++) {
 
-        if (z.ZV[i] == v1) {
-          z.ZV[i] = z.ZV[z.count-1]
-          z.count -= 1
-          return 1
-        }
+      if (z.ZV[i] == v1) {
+        z.ZV[i] = z.ZV[z.count-1]
+        z.count -= 1
+        return 1
       }
-
-      return -1
     }
+
+    return -1
   }
   __get_z(x, y) {
 
@@ -271,15 +248,8 @@ class Zonemap {
 
     // #TODO: VZ size
     if (vnum>=this.vsize-1) {
-    //   const new_vz = <long *>realloc(self.VZ, self.vsize*2*sizeof(long))
-      // if (new_vz) {
         this.VZ = new_vz;
         this.vsize = this.vsize*2
-      // }
-      // else {
-      //   // ## this is really bad
-      //   // pass
-      // }
     }
 
     this.vnum = vnum
@@ -296,15 +266,8 @@ class Zonemap {
     while (true) {
 
       if (count>=this.Z[z].size-1) {
-        // const new_zv = <long *>realloc(self.Z[z].ZV, self.Z[z].size*2*sizeof(long))
-        // if (new_zv) {
-          this.Z[z].ZV = new_zv;
-          this.Z[z].size = this.Z[z].size*2
-        // }
-        // else {
-        //   ## this is really bad
-        //   pass
-        // }
+        this.Z[z].ZV = new_zv;
+        this.Z[z].size = this.Z[z].size*2
       }
 
       for (let s = 0; s < count; s ++) {
