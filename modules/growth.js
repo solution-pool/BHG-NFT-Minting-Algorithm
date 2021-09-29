@@ -63,3 +63,34 @@ function spawn_curl(df, limit, prob_spawn=1.0) {
         }
     }
 }
+
+function collapse(df, d, limit) {
+    let edgeNumber  = df.get_enum()
+    let rnd         = []
+    let rndmask     = []
+
+    for(let i = 0 ; i < edgeNumber; i ++) {
+        rnd.push(Math.random())
+    }
+
+    const rndLength = rnd.length
+    for(i = 0; i < rndLength ; i ++) {
+        if(rnd[i] < limit) {
+            continue
+        }
+        rndmask.push(i)
+    }
+    let rndmaskLength = rndmask.length    
+    for(let i = 0 ; i < rndmaskLength; i ++) {
+        let l = df.get_edge_length(rndmask[i])
+
+        if(l < d && edgeNumber > INIT_NUM) {
+            try {
+                df.collapse_edge(rndmask[i])
+            } 
+            catch(e) {
+                continue
+            }
+        }
+    }
+}
