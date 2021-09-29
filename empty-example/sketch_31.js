@@ -24,6 +24,9 @@ let DF = []
 let render = []
 let np_coords = []
 let np_vert_coords = []
+
+let growth_flag = true
+
 for(let i = 0; i < NMAX; i ++) {
   np_coords.push([0,0,0,0])
 }
@@ -57,15 +60,19 @@ function wrap (render) {
 
 function steps(df) {
   df.optimize_position(STP)
-  spawn(df, NEARL, 0.03)
+  if(growth_flag) {
+    spawn(df, NEARL, 0.03)
+  } else {
+    collapse(df, NEARL, 0.03)
+  }
   if(df.safe_vertex_positions(3 * STP) < 0) {
     if(step_count < 7) {
-      step_count ++ 
+      step_count ++  
     } else {
       step_count = 1
     }
     SIZE =  parseInt(REALSIZE * step_count / 7)
-    setup()
+    growth_flag = false
   }
 }
   
