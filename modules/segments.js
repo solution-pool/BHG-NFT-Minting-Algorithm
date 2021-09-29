@@ -620,12 +620,13 @@ class Segments {
       throw new Error("invalid edge in split_edge e1, " + e1)
     }
 
-    v1 = this.EV[2*e1]
-    v2 = this.EV[2*e1+1]
-
+    let v1 = this.EV[2*e1]
+    let v2 = this.EV[2*e1+1]
     if (this.VA[v1] < 1 || this.VA[v2] < 1) {
       throw new Error("edge is connected to passive vertex")
     }
+
+    let e2, v3, dx, dy
 
     if (this.VE[2*v1] == e1) {
       e2 = this.VE[2*v1+1]
