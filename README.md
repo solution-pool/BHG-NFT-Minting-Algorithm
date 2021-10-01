@@ -2,6 +2,49 @@
 
 You have downloaded the BHG-Cardano-P5-mint files.
 
+# About the nfts of this project
+
+* Mint Size:
+  - 8,888
+
+* Rarities: apply to all traits
+  - Normal (31%) 2755
+  - Unusual (25%) 2222
+  - Special (19%) 1688
+  - Rare (12%) 1066
+  - Ultra Rare (7%) 622
+  - Legendary (5%) 444
+  - Exo (1%) 88
+  (- Unique (0.0001%) 3)
+
+
+* Growth Type:
+  - Bursting: ref. 13, 112
+  - Overlapping Circle: ref. 3
+  - OG Coral Beta 2D: ref. 838 (line)
+  - OG Coral Alpha 2D: ref. 50 (Circle)
+  - OG Coral Beta 3D (From Line): ref. 16, 17, 20, Discord
+  - OG Coral Beta 3D (From center): ref. 279
+  - OG Coral Alpha 3D: ref. 53, 60, 275
+  (- Unique Growth Type: ref. )
+
+* Colors
+  - send several colors to choose from please 
+
+* Location
+  - Added later to metadata after collection is done (randomized)
+
+* Thumbnail Image
+  - Capture Full Growth
+* Groth rate
+* Size: 
+  - 7 different possible sizes rarity from smallest being least rare, to largest being the most rare.
+* Growth speed 
+  - 7 different possible growth speeds from slowest being least rare to fastest being most rare.
+* Growth rythm (contraction and expansion)
+  - 7 different kinds of repeated expansion and contraction
+  - for example continoues growth, which just grows out and then contracts again fully and then pulsating (6  variations) where it expands and grows for a bit, contracts a little bit and then  grows again until full size    where the pattern is just reversed.
+
 # Contents of the p5 folder
 
 * p5.js file
@@ -9,11 +52,15 @@ You have downloaded the BHG-Cardano-P5-mint files.
 * addons folder
   * p5.sound.js
   * p5.sound.min.js
-* empty-example folder
-  * index.html
-  * p5.js
-  * p5.sound.js
-  * sketch.js
+* coral folder
+  * Normal
+  * Unusual
+  * Special
+  * Rare
+  * Ultra rare
+  * Legendary
+  * Exo
+  * Unique
 * modules folder
   * differentialLine.js
   * growth.js
@@ -39,9 +86,11 @@ The addons folder includes additional p5.js related libraries, in both original 
 
 p5.sound extends p5.js with Web Audio functionality including audio input, playback, analysis, and synthesis.
 
-## empty-example folder
+## corals folder
 
-This is an empty example of a website. The folder includes the file for the website, index.html, the p5.js library, other related p5.js libraries, and a template starting point for your p5.js sketch, called sketch.js.
+All the nfts is here. This folder includes the file for the website, index.html, the p5.js library, other related p5.js libraries, and a template starting point for your p5.js sketch, called sketch.js.
+There are 7 types of growth types of the nfts and each types have many nfts of its type except unique.
+In total, there are 8888 nfts in this folder now.
 
 ### index.html
 
@@ -79,7 +128,7 @@ This README file formatted with Markdown :)
 
 # What's next?
 
-Will insert initial geometries and images files.
+Will insert plusating function to the nfts.
 
 # License
 
