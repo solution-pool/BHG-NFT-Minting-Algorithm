@@ -97,14 +97,8 @@ class DifferentialLine extends Segments {
                 if(nrm > this.farl || nrm <= 0) {
                     continue
                 }
-
-                if(growth_flag) {
-                    resx += dx * (this.farl/nrm -1) *step
-                    resy += dy * (this.farl/nrm-1)*step
-                } else {
-                    resx += dx * (this.farl/nrm -1.5) *step
-                    resy += dy * (this.farl/nrm-1.5)*step
-                }
+                resx += dx * (this.farl/nrm -1) *step
+                resy += dy * (this.farl/nrm-1)*step
             }
         }
         sx[v] += resx
