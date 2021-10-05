@@ -1,5 +1,5 @@
 let np_coords, np_vert_coords, growth_flag, DF, render, coloroptions, current_front
-let step_count = 1, step_length, color_count = 0, draw_path = [], pulse_path = [], pulse_num = 50, pulse_start = false, pulse_erase = false, pulse_fill = false
+let step_count = 1, step_length, color_count = 0, draw_path = [], pulse_path = [], pulse_num = 5, pulse_start = false, pulse_erase = false, pulse_fill = false
 
 function preload() {
   let colorLength = color.length
@@ -147,7 +147,7 @@ function steps(df) {
   } else {
     if(growth_flag) {
       df.optimize_position(STP)
-      spawn(df, NEARL, 0.03)
+      spawn(df, NEARL, 0.5)
     }
     if(check_step(step_length, df)) {
       if(step_count < RYTHM - 1) {
