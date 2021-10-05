@@ -132,7 +132,11 @@ class Render {
             let x = point[0]
             let y =  point[1]
             rect(x * REALSIZE,y * REALSIZE,pix * REALSIZE, pix * REALSIZE)
-            stroke(this.front)
+            if(!growth_flag || pulse_erase) {
+                stroke(this.back) 
+            } else {
+                stroke(this.front)
+            }
         }
     }
 
@@ -154,7 +158,11 @@ class Render {
             let x = point[0] + direct[0] * random
             let y = point[1] + direct[1] * random
             
-            stroke(FRONT)
+            if(!growth_flag || pulse_erase) {
+                stroke(this.back) 
+            } else {
+                stroke(this.front)
+            }
             rect(x * REALSIZE, y * REALSIZE, pix * REALSIZE, pix * REALSIZE);
         }
     }
