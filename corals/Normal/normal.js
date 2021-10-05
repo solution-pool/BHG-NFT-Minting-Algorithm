@@ -98,7 +98,6 @@ function wrap (render) {
     let res     = steps(DF)
     let num     = DF.np_get_edges_coordinates(np_coords)
     let real  = np_coords.slice(0, num)
-
     if(pulse_start) {
       real = pulse_path.shift() 
     } else {
@@ -154,9 +153,9 @@ function steps(df) {
       df.optimize_position(STP)
       spawn(df, NEARL, 0.03)
     }
-
     if(check_step(step_length, df)) {
       if(step_count < RYTHM - 1) {
+        pulse_start = true
         let drawLength = draw_path.length
         for(let i = 1; i <= pulse_num; i ++ ) {
           pulse_path.push(draw_path[drawLength - i])
@@ -164,8 +163,10 @@ function steps(df) {
         for(let i = pulse_num; i > 0; i -- ) {
           pulse_path.push(draw_path[drawLength - i])
         }
-        pulse_start = true
       } else {
+        if(RYTHM == 1) {
+          noLoop()
+        }
         growth_flag = false
       }
     }
