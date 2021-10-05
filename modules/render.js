@@ -132,7 +132,7 @@ class Render {
             let x = point[0]
             let y =  point[1]
             rect(x * REALSIZE,y * REALSIZE,pix * REALSIZE, pix * REALSIZE)
-            stroke(FRONT)
+            stroke(this.front)
         }
     }
 
