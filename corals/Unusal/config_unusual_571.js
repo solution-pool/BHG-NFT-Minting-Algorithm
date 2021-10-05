@@ -1,18 +1,22 @@
-const REALSIZE = 500
+// Those variables contain the trait of the coral.
 
-const NMAX  = 10 ** 5
-const ONE   = 1 / REALSIZE
+const SIZE          = 300       // Growth size
+const SPEED         = 1         // Growth speed
+const LOCATION      = 1         // Location
+const COLOROPTION   = 1         // Coloroption
+const RYTHM         = 1         // Growth RYTHM
 
-const STP   = ONE
-const NEARL = 3 * ONE
-const FARL  = 25 * ONE
+// Those are the config value that the algorithm uses. Do not modify this value or the coral will be changed unexpectedly.
 
-const INIT_RAD  = 6 * ONE
-const INIT_NUM  = 13
-const MID   = 0.5
-
-const FRONT = color[171]
-const BACK  = [255, 255, 255]
-let index_number = 571
-
-
+const INDEX         = 571
+const REALSIZE      = SIZE
+const NMAX          = 10 ** 4
+const ONE           = 1 / REALSIZE
+const STP           = ONE
+const NEARL         = 5 * ONE
+const FARL          = 30 * ONE
+const INIT_RAD      = 6 * ONE
+const INIT_NUM      = 10
+const MID           = 0.5
+const TWOPI         = 2 * Math.PI
+let FRONT, BACK, CURRENTSIZE
