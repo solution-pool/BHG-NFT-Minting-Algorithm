@@ -1,5 +1,5 @@
 let np_coords, np_vert_coords, growth_flag, DF, render, coloroptions, current_front
-let step_count = 1, step_length, color_count = 0, draw_path = [], pulsating_path = [], pulsating_count =  0, pulse_start = false
+let step_count = 1, step_length, color_count = 0, draw_path = [], pulse_path = [], pulse_num = 50, pulse_start = false, pulse_erase = false, pulse_fill = false
 
 function preload() {
   let colorLength = color.length
@@ -105,14 +105,20 @@ function wrap (render) {
   let vert_num = DF.np_get_vert_coordinates(np_vert_coords)
   let real  = np_vert_coords.slice(0, vert_num)
 
-  if(growth_flag) {
-    draw_path.push(real)
-  } else {
-    if(pulse_start) {
-      real = draw_path.pop()
-      pulsating_path.push(real)  
+  if(pulse_start) {
+    real = pulse_path.shift() 
+    if(pulse_path.length >= pulse_num) {
+      pulse_erase = true
+      pulse_fill = false
     } else {
-      real = pulsating_path.pop()
+      pulse_erase = false
+      pulse_fill = true
+    }
+  } else {
+    if(growth_flag) {
+      draw_path.push(real)
+    } else {
+      real = draw_path.pop()
     }
     if(real == undefined) {
       setup()
