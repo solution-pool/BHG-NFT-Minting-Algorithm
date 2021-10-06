@@ -162,10 +162,13 @@ function make_color_store() {
 }
 
 function init_current_size() {
-  if(RYTHM == 1 || RYTHM == 2) {
-    CURRENTSIZE = REALSIZE
+  step_count = 1
+  if(RYTHM > 2) {
+    CURRENTSIZE   = parseInt(REALSIZE / (RYTHM - 1))
+    step_unit   = CURRENTSIZE
+    step_length = CURRENTSIZE
   } else {
-    CURRENTSIZE = parseInt(REALSIZE / (RYTHM - 1))
+    step_length = step_unit = CURRENTSIZE = REALSIZE
   }
 }
 
@@ -191,8 +194,8 @@ function setup() {
   let lock_edges
   for (let i = 0; i < angles.length; i ++) {
     let a = angles[i]
-    let x = 0.5 + cos(a)*0.1
-    let y = 0.5 + sin(a)*0.1
+    let x = 0.5 + cos(a)*0.06
+    let y = 0.5 + sin(a)*0.06
     xys.push([x,y])
   }
   xys.sort()
@@ -265,21 +268,47 @@ function init_coordinates() {
 }
 
 function steps(df) {
-  if(growth_flag) {
-    df.optimize_position(STP)
-    spawn(df, NEARL, 0.03)
-  }
-
-  if(df.safe_vertex_positions(3 * STP) < 0) {
-    if(RYTHM == 1 ) {
-      noLoop()
-    } else {
-      growth_flag = false
-      if(RYTHM > 2) {
+  if(pulse_start) {
+    if(pulse_path.length == 0) {
+      pulse_start = false
+      if(step_count < RYTHM - 1) {
+        step_count ++
+      } else {
+        step_count = 1
+      }
+      step_length = step_unit * step_count
+    }
+  } else {
+    if(growth_flag) {
+      df.optimize_position(STP)
+      spawn(df, NEARL, 0.03)
+    }
+    if(check_step(step_length, df)) {
+      if(step_count < RYTHM - 1) {
         pulse_start = true
+        let drawLength = draw_path.length
+        for(let i = 1; i <= pulse_num; i ++ ) {
+          pulse_path.push(draw_path[drawLength - i])
+        }
+        for(let i = pulse_num; i > 0; i -- ) {
+          pulse_path.push(draw_path[drawLength - i])
+        }
+      } else {
+        if(RYTHM == 1) {
+          noLoop()
+        }
+        growth_flag = false
       }
     }
   }
+}
+
+function check_step(step, df) {
+  let temp = CURRENTSIZE
+  CURRENTSIZE = step
+  let result = df.safe_vertex_positions(3 * STP) < 0
+  CURRENTSIZE = temp
+  return result
 }
 
 function sleep(milliseconds) {
