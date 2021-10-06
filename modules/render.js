@@ -1,45 +1,47 @@
 let render_container
 const color = [
-    '#FFEBEE',
-    '#F44336',
-    '#FF8A80',
-    '#F8BBD0',
-    '#D81B60',
-    '#FF4081',
-    '#CE93D8',
-    '#7B1FA2',
-    '#D500F9',
-    '#9575CD',
-    '#4527A0',
-    '#6200EA',
-    '#5C6BC0',
-    '#1A237E',
-    '#E3F2FD',
-    '#2196F3',
-    '#82B1FF',
-    '#B3E5FC',
-    '#0288D1',
-    '#00B0FF',
-    '#4DD0E1',
-    '#00838F',
-    '#00B8D4',
-    '#26A69A',
-    '#004D40',
-    '#E8F5E9',
-    '#4CAF50',
-    '#B9F6CA',
-    '#DCEDC8',
-    '#7CB342',
-    '#B2FF59',
-    '#E6EE9C',
-    '#AFB42B',
-    '#C6FF00',
-    '#FFF176',
-    '#F9A825',
-    '#FFD600',
-    '#FFCA28',
-    '#FF6F00',
-    '#FFF3E0',
+    [255, 0 , 0],
+    [255, 0 , 36],
+    [255, 0 , 72],
+    [255, 0 , 108],
+    [255, 0 , 144],
+    [255, 0 , 180],
+    [255, 0 , 216],
+    [255, 0 , 255],
+    [216, 0 , 255],
+    [180, 0 , 255],
+    [144, 0 , 255],
+    [108, 0 , 255],
+    [72, 0 , 255],
+    [36, 0 , 255],
+    [0, 0 , 255],
+    [0, 36 , 255],
+    [0, 72 , 255],
+    [0, 108 , 255],
+    [0, 144 , 255],
+    [0, 180 , 255],
+    [0, 216 , 255],
+    [0, 255 , 255],
+    [0, 255 , 216],
+    [0, 255 , 180],
+    [0, 255 , 144],
+    [0, 255 , 108],
+    [0, 255 , 72],
+    [0, 255 , 36],
+    [0, 255 , 0],
+    [36, 255 , 0],
+    [72, 255 , 0],
+    [108, 255 , 0],
+    [144, 255 , 0],
+    [180, 255 , 0],
+    [216, 255 , 0],
+    [255, 255 , 0],
+    [255, 216 , 0],
+    [255, 180 , 0],
+    [255, 144 , 0],
+    [255, 108 , 0],
+    [255, 72 , 0],
+    [255, 36 , 0],
 ]
 class Render {
     constructor(n, back, front) {
@@ -108,7 +110,11 @@ class Render {
             let xp = x1 - scale[i] * Math.cos(a)
             let yp = y1 - scale[i] * Math.sin(a)
             noFill()
-            stroke(this.front)
+            if(COLOROPTION < 5) {
+                stroke(this.front)
+            } else {
+                stroke(current_front)
+            }
             arc(xp * REALSIZE, yp * REALSIZE, r * REALSIZE, r * REALSIZE, 0, TWOPI, OPEN)
         }
     }
@@ -135,7 +141,12 @@ class Render {
             if(!growth_flag || pulse_erase) {
                 stroke(this.back) 
             } else {
-                stroke(this.front)
+                if(COLOROPTION < 5) {
+                    stroke(this.front)
+                } else {
+                    stroke(current_front)
+                }
+                // stroke(this.front)
             }
         }
     }
@@ -161,7 +172,11 @@ class Render {
             if(!growth_flag || pulse_erase) {
                 stroke(this.back) 
             } else {
-                stroke(this.front)
+                if(COLOROPTION < 5) {
+                    stroke(this.front)
+                } else {
+                    stroke(current_front)
+                }
             }
             rect(x * REALSIZE, y * REALSIZE, pix * REALSIZE, pix * REALSIZE);
         }
