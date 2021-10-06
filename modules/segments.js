@@ -739,13 +739,13 @@ class Segments {
       throw new Error("invalid edge in split_edge e1" + e1)
     }
 
-    va = this.EV[2*e1]
-    vb = this.EV[2*e1+1]
+    let va = this.EV[2*e1]
+    let vb = this.EV[2*e1+1]
+    let e2, e3
 
     if (va<0 || vb<0) {
       throw new Error("non-vertex")
     }
-
     if (this.VE[2*va] == this.VE[2*vb]) {
       e2 = this.VE[2*va+1]
       e3 = this.VE[2*vb+1]
@@ -766,11 +766,11 @@ class Segments {
       throw new Error('edges not connected')
     }
 
-    v3 = this.EV[2*e1]
-    v4 = this.EV[2*e1+1]
-
-    t = 0.0
-
+    let v3 = this.EV[2*e1]
+    let v4 = this.EV[2*e1+1]
+    let v1, v2, ax, bx, ay, by
+    let t = 0.0
+    
     if (e2>-1) {
       v1 = this.EV[2*e2]
       v2 = this.EV[2*e2+1]
@@ -780,7 +780,7 @@ class Segments {
       ay = this.Y[v1] - this.Y[v2]
       by = this.Y[v3] - this.Y[v4]
 
-      t += Math.fabs(ax*by - ay*bx)*0.5
+      t += Math.abs(ax*by - ay*bx)*0.5
     }
     if (e3>-1) {
       v1 = this.EV[2*e3]
@@ -791,9 +791,9 @@ class Segments {
       ay = this.Y[v1] - this.Y[v2]
       by = this.Y[v3] - this.Y[v4]
 
-      t += Math.fabs(ax*by - ay*bx)*0.5
+      t += Math.abs(ax*by - ay*bx)*0.5
     }
-
+    
     if (t<=0) {
       throw new Error("no curvature.")
     }
