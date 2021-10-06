@@ -1,5 +1,5 @@
 let np_coords, np_vert_coords, growth_flag, DF, render, coloroptions, current_front
-let step_count = 1, step_length, color_count = 0, draw_path = [], pulse_path = [], pulse_num = 5, pulse_start = false, pulse_erase = false, pulse_fill = false
+let step_count = 1, step_length, color_count = 0, draw_path = [], pulse_path = [], pulse_num = 10, pulse_start = false, pulse_erase = false, pulse_fill = false
 let currendColorStore = [], colorIndex = 0, colorOperation = 1
 
 function preload() {
@@ -54,6 +54,8 @@ function preload() {
   }
   FRONT = coloroptions[COLOROPTION].FRONT
   BACK  = coloroptions[COLOROPTION].BACK
+
+  console.log(FRONT)
 
   make_color_store()
 }
@@ -222,8 +224,6 @@ function wrap (render) {
   
   if(pulse_start) {
     real = pulse_path.shift() 
-    console.log(pulse_path)
-      console.log(real)
     if(pulse_path.length >= pulse_num) {
       pulse_erase = true
       pulse_fill = false
