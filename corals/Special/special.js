@@ -1,5 +1,5 @@
 let np_coords, np_vert_coords, growth_flag, DF, render, coloroptions, current_front
-let step_count = 1, step_length, color_count = 0, draw_path = [], pulse_path = [], pulse_num = 50, pulse_start = false, pulse_erase = false, pulse_fill = false
+let step_count = 1, step_length, color_count = 0, draw_path = [], pulse_path = [], pulse_num = 5, pulse_start = false, pulse_erase = false, pulse_fill = false
 let currendColorStore = [], colorIndex = 0, colorOperation = 1
 
 function preload() {
@@ -162,10 +162,13 @@ function make_color_store() {
 }
 
 function init_current_size() {
-  if(RYTHM == 1 || RYTHM == 2) {
-    CURRENTSIZE = REALSIZE
+  step_count = 1
+  if(RYTHM > 2) {
+    CURRENTSIZE   = parseInt(REALSIZE / (RYTHM - 1))
+    step_unit   = CURRENTSIZE
+    step_length = CURRENTSIZE
   } else {
-    CURRENTSIZE = parseInt(REALSIZE / (RYTHM - 1))
+    step_length = step_unit = CURRENTSIZE = REALSIZE
   }
 }
 
@@ -219,6 +222,8 @@ function wrap (render) {
   
   if(pulse_start) {
     real = pulse_path.shift() 
+    console.log(pulse_path)
+      console.log(real)
     if(pulse_path.length >= pulse_num) {
       pulse_erase = true
       pulse_fill = false
@@ -254,21 +259,47 @@ function init_coordinates() {
 }
 
 function steps(df) {
-  if(growth_flag) {
-    df.optimize_position(STP)
-    spawn(df, NEARL, 0.5)
-  }
-
-  if(df.safe_vertex_positions(3 * STP) < 0) {
-    if(RYTHM == 1 ) {
-      noLoop()
-    } else {
-      growth_flag = false
-      if(RYTHM > 2) {
+  if(pulse_start) {
+    if(pulse_path.length == 0) {
+      pulse_start = false
+      if(step_count < RYTHM - 1) {
+        step_count ++
+      } else {
+        step_count = 1
+      }
+      step_length = step_unit * step_count
+    }
+  } else {
+    if(growth_flag) {
+      df.optimize_position(STP)
+      spawn(df, NEARL, 0.5)
+    }
+    if(check_step(step_length, df)) {
+      if(step_count < RYTHM - 1) {
         pulse_start = true
+        let drawLength = draw_path.length
+        for(let i = 1; i <= pulse_num; i ++ ) {
+          pulse_path.push(draw_path[drawLength - i])
+        }
+        for(let i = pulse_num; i > 0; i -- ) {
+          pulse_path.push(draw_path[drawLength - i])
+        }
+      } else {
+        if(RYTHM == 1) {
+          noLoop()
+        }
+        growth_flag = false
       }
     }
   }
+}
+
+function check_step(step, df) {
+  let temp = CURRENTSIZE
+  CURRENTSIZE = step
+  let result = df.safe_vertex_positions(3 * STP) < 0
+  CURRENTSIZE = temp
+  return result
 }
 
 function sleep(milliseconds) {
