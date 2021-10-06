@@ -1,5 +1,6 @@
 let np_coords, np_vert_coords, growth_flag, DF, render, coloroptions, current_front
 let step_count = 1, step_length, color_count = 0, draw_path = [], pulse_path = [], pulse_num = 50, pulse_start = false
+let currendColorStore = [], colorIndex = 0, colorOperation = 1
 
 function preload() {
   let colorLength = color.length
@@ -53,7 +54,114 @@ function preload() {
   }
   FRONT = coloroptions[COLOROPTION].FRONT
   BACK  = coloroptions[COLOROPTION].BACK
+
+  make_color_store()
 }
+
+
+function make_color_store() {
+  if(COLOROPTION < 5)
+    return
+  if(FRONT.length == 2) {
+    let first = FRONT[0]
+    let last  = FRONT[1]
+
+    if(first[0] > last[0]) {
+      for(let i = first[0]; i >= last[0]; i --) {
+        currendColorStore.push([i, first[1], first[2]])
+      } 
+    } else {
+      for(let i = first[0]; i <= last[0]; i ++) {
+        currendColorStore.push([i, first[1], first[2]])
+      }
+    }
+
+    if(first[1] > last[1]) {
+      for(let i = first[1]; i >= last[1]; i --) {
+        currendColorStore.push([last[0], i, first[2]])
+      } 
+    } else {
+      for(let i = first[1]; i <= last[1]; i ++) {
+        currendColorStore.push([last[0], i, first[2]])
+      }
+    }
+
+    if(first[2] > last[2]) {
+      for(let i = first[2]; i >= last[2]; i --) {
+        currendColorStore.push([last[0], last[1], i])
+      } 
+    } else {
+      for(let i = first[2]; i <= last[2]; i ++) {
+        currendColorStore.push([last[0], last[1], i])
+      }
+    }
+  } else {
+    let first = FRONT[0]
+    let second = FRONT[1]
+    let last  = FRONT[2]
+
+    if(first[0] > second[0]) {
+      for(let i = first[0]; i >= second[0]; i --) {
+        currendColorStore.push([i, first[1], first[2]])
+      } 
+    } else {
+      for(let i = first[0]; i <= second[0]; i ++) {
+        currendColorStore.push([i, first[1], first[2]])
+      }
+    }
+
+    if(first[1] > second[1]) {
+      for(let i = first[1]; i >= second[1]; i --) {
+        currendColorStore.push([second[0], i, first[2]])
+      } 
+    } else {
+      for(let i = first[1]; i <= second[1]; i ++) {
+        currendColorStore.push([second[0], i, first[2]])
+      }
+    }
+
+    if(first[2] > second[2]) {
+      for(let i = first[2]; i >= second[2]; i --) {
+        currendColorStore.push([second[0], second[1], i])
+      } 
+    } else {
+      for(let i = first[2]; i <= second[2]; i ++) {
+        currendColorStore.push([second[0], second[1], i])
+      }
+    }
+    
+    if(second[0] > last[0]) {
+      for(let i = second[0]; i >= last[0]; i --) {
+        currendColorStore.push([i, second[1], second[2]])
+      } 
+    } else {
+      for(let i = second[0]; i <= last[0]; i ++) {
+        currendColorStore.push([i, second[1], second[2]])
+      }
+    }
+
+    if(second[1] > last[1]) {
+      for(let i = second[1]; i >= second[1]; i --) {
+        currendColorStore.push([last[0], i, second[2]])
+      } 
+    } else {
+      for(let i = second[1]; i <= last[1]; i ++) {
+        currendColorStore.push([last[0], i, second[2]])
+      }
+    }
+
+    if(second[2] > last[2]) {
+      for(let i = second[2]; i >= last[2]; i --) {
+        currendColorStore.push([last[0], last[1], i])
+      } 
+    } else {
+      for(let i = second[2]; i <= last[2]; i ++) {
+        currendColorStore.push([last[0], last[1], i])
+      }
+    }
+  }
+}
+
 
 function init_current_size() {
   step_count = 1
@@ -101,6 +209,23 @@ function setup() {
 }
 
 function draw() {
+  if(COLOROPTION < 5) {
+    current_front = FRONT
+  } else {
+    current_front = currendColorStore[colorIndex]
+    if(colorIndex >= currendColorStore.length - 1) {
+      colorOperation = 2
+    } 
+    if(colorIndex <= 0) {
+      colorOperation = 1
+    }
+
+    if(colorOperation == 1) {
+      colorIndex ++
+    } else {
+      colorIndex --
+    }
+  }
   wrap(render)
 }
 
