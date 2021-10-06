@@ -46,19 +46,19 @@ function spawn_curl(df, limit, prob_spawn=1.0) {
             max_curv = Math.max(max_curv, t)
         } catch (e) {
         }
-        let ne = ind_curv.length
+    }
+    let ne = ind_curv.length
 
-        for(let i = 0; i < ne; i ++) {
-            let r = Math.random()
-            let e = i
-            let t = ind_curv[e]
+    for(let i = 0; i < ne; i ++) {
+        let r = Math.random()
+        let e = i
+        let t = ind_curv[e]
 
-            if(r < t / max_curv * prob_spawn) {
-                try {
-                    df.split_edge(e, minimum_length = limit)
-                } catch (e) {
-                    
-                }
+        if(r < t / max_curv * prob_spawn) {
+            try {
+                df.split_edge(e, minimum_length = limit)
+            } catch (e) {
+                
             }
         }
     }
