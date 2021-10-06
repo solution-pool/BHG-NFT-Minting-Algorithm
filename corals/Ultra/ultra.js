@@ -140,7 +140,7 @@ function make_color_store() {
     }
 
     if(second[1] > last[1]) {
-      for(let i = second[1]; i >= second[1]; i --) {
+      for(let i = second[1]; i >= last[1]; i --) {
         currendColorStore.push([last[0], i, second[2]])
       } 
     } else {
