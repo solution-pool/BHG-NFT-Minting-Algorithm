@@ -1,5 +1,5 @@
 let np_coords, np_vert_coords, growth_flag, DF, render, coloroptions, current_front
-let step_count = 1, step_length, color_count = 0, draw_path = [], pulse_path = [], pulse_num = 100, pulse_start = false, pulse_erase = false, pulse_fill = false
+let step_count = 1, step_length, draw_path = [], pulse_path = [], pulse_num = 100, pulse_start = false, pulse_erase = false, pulse_fill = false
 let currendColorStore = [], colorIndex = 0, colorOperation = 1
 
 function preload() {
@@ -51,6 +51,10 @@ function preload() {
         color[((INDEX + 28) % colorLength)]
       ]
     },
+    9 : {
+      BACK : [0, 0, 0],
+      FRONT : color[(INDEX % colorLength)]
+    }
   }
   FRONT = coloroptions[COLOROPTION].FRONT
   BACK  = coloroptions[COLOROPTION].BACK
@@ -61,7 +65,7 @@ function preload() {
 function make_color_store() {
   if(COLOROPTION < 5)
     return
-  if(FRONT.length == 2) {
+  if(COLOROPTION == 5 || COLOROPTION == 6) {
     let first = FRONT[0]
     let last  = FRONT[1]
 
@@ -94,7 +98,8 @@ function make_color_store() {
         currendColorStore.push([last[0], last[1], i])
       }
     }
-  } else {
+  }
+  else if(COLOROPTION == 7 || COLOROPTION == 8) {
     let first = FRONT[0]
     let second = FRONT[1]
     let last  = FRONT[2]
@@ -158,6 +163,8 @@ function make_color_store() {
         currendColorStore.push([last[0], last[1], i])
       }
     }
+  } else {
+
   }
 }
 
@@ -175,10 +182,11 @@ function init_current_size() {
 function setup() {
   init_current_size()
   growth_flag = true
+  colorIndex  = 0
+
   Math.seedrandom(INDEX)
-  if(COLOROPTION > 4) {
-    current_front = FRONT[color_count]
-    color_count = (color_count + 1) % (FRONT.length)
+  if(COLOROPTION > 4 && COLOROPTION < 9) {
+    current_front = FRONT[0]
   } else {
     current_front = FRONT
   }
@@ -198,7 +206,7 @@ function setup() {
 function draw() {
   if(COLOROPTION < 5) {
     current_front = FRONT
-  } else {
+  } else if(COLOROPTION < 9 && COLOROPTION > 4) {
     current_front = currendColorStore[colorIndex]
     if(colorIndex >= currendColorStore.length - 1) {
       colorOperation = 2
@@ -212,6 +220,8 @@ function draw() {
     } else {
       colorIndex --
     }
+  } else {
+    
   }
   wrap(render)
 }
