@@ -8,7 +8,7 @@ const RYTHM         = 3         // Growth RYTHM
 
 // Those are the config value that the algorithm uses. Do not modify this value or the coral will be changed unexpectedly.
 
-const INDEX         = 6
+const INDEX         = 26
 const REALSIZE      = SIZE
 const NMAX          = 10 ** 4
 const ONE           = 1 / REALSIZE
