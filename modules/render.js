@@ -95,7 +95,7 @@ class Render {
         }
     }
 
-    circles(x1, y1, x2, y2, r, nmin = 2) {
+    circles(x1, y1, x2, y2, r, nmin = 2, fill=false) {
         let dx = x1 - x2
         let dy = y1 - y2
 
@@ -110,10 +110,22 @@ class Render {
             let xp = x1 - scale[i] * Math.cos(a)
             let yp = y1 - scale[i] * Math.sin(a)
             noFill()
-            if(COLOROPTION < 5) {
-                stroke(this.front)
+            if(fill) {
+                if(!growth_flag || pulse_erase) {
+                    stroke(this.back) 
+                } else {
+                    if(COLOROPTION < 5) {
+                        stroke(this.front)
+                    } else {
+                        stroke(current_front)
+                    }
+                }
             } else {
-                stroke(current_front)
+                if(COLOROPTION < 5) {
+                    stroke(this.front)
+                } else {
+                    stroke(current_front)
+                }
             }
             arc(xp * REALSIZE, yp * REALSIZE, r * REALSIZE, r * REALSIZE, 0, TWOPI, OPEN)
         }

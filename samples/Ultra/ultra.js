@@ -1,5 +1,5 @@
 let np_coords, np_vert_coords, growth_flag, DF, render, coloroptions, current_front
-let step_count = 1, step_length, draw_path = [], pulse_path = [], pulse_num = 5, pulse_start = false, pulse_erase = false, pulse_fill = false
+let step_count = 1, step_length, draw_path = [], pulse_path = [], pulse_num = 50, pulse_start = false, pulse_erase = false, pulse_fill = false
 let currendColorStore = [], colorIndex = 0, colorOperation = 1, fullColorStack = []
 
 function preload() {
@@ -233,8 +233,8 @@ function setup() {
   let lock_edges
   for (let i = 0; i < angles.length; i ++) {
     let a = angles[i]
-    let x = 0.5 + cos(a)*0.06
-    let y = 0.5 + sin(a)*0.06
+    let x = 0.5 + cos(a)*0.05
+    let y = 0.5 + sin(a)*0.05
     xys.push([x,y])
   }
   xys.sort()
@@ -315,9 +315,8 @@ function wrap (render) {
     let y2 = point[3]
 
     let r =  render.pix / 3
-    render.circles(x1, y1, x2, y2, r)
+    render.circles(x1, y1, x2, y2, r, 2, true)
 }
-  render.sandstroke(real)
   // render.dot(real)
   return res
 }
