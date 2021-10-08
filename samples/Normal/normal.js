@@ -274,8 +274,16 @@ function wrap (render) {
     let res     = steps(DF)
     let num     = DF.np_get_edges_coordinates(np_coords)
     let real  = np_coords.slice(0, num)
+
     if(pulse_start) {
       real = pulse_path.shift() 
+      if(pulse_path.length >= pulse_num * step_count) {
+        pulse_erase = true
+        pulse_fill = false
+      } else {
+        pulse_erase = false
+        pulse_fill = true
+      }
     } else {
       if(growth_flag) {
         draw_path.push(real)

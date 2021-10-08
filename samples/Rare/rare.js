@@ -284,7 +284,7 @@ function wrap (render) {
 
   if(pulse_start) {
     real = pulse_path.shift() 
-    if(pulse_path.length >= pulse_num) {
+    if(pulse_path.length >= pulse_num * step_count) {
       pulse_erase = true
       pulse_fill = false
     } else {

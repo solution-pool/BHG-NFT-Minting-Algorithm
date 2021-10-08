@@ -1,6 +1,7 @@
 let np_coords, np_vert_coords, growth_flag, DF, render, coloroptions, current_front
-let step_count = 1, step_length, draw_path = [], pulse_path = [], pulse_num = 30, pulse_start = false, pulse_erase = false, pulse_fill = false
+let step_count = 1, step_length, draw_path = [], pulse_path = new Array(), pulse_num = 30, pulse_start = false, pulse_erase = false, pulse_fill = false
 let currendColorStore = [], colorIndex = 0, colorOperation = 1, fullColorStack = []
+let count_pu = 0
 
 function preload() {
   let colorLength = color.length
@@ -58,8 +59,6 @@ function preload() {
   }
   FRONT = coloroptions[COLOROPTION].FRONT
   BACK  = coloroptions[COLOROPTION].BACK
-
-  console.log(FRONT)
 
   make_full_color_stack()
   make_color_store()
@@ -234,35 +233,37 @@ function setup() {
   render = new Render(REALSIZE, BACK, current_front)
 }
 function draw() {
-  if(COLOROPTION < 5) {
-    current_front = FRONT
-  } else if(COLOROPTION < 9 && COLOROPTION > 4) {
-    current_front = currendColorStore[colorIndex]
-    if(colorIndex >= currendColorStore.length - 1) {
-      colorOperation = 2
-    } 
-    if(colorIndex <= 0) {
-      colorOperation = 1
-    }
+  if(!pulse_start) {
+    if(COLOROPTION < 5) {
+      current_front = FRONT
+    } else if(COLOROPTION < 9 && COLOROPTION > 4) {
+      current_front = currendColorStore[colorIndex]
+      if(colorIndex >= currendColorStore.length - 1) {
+        colorOperation = 2
+      } 
+      if(colorIndex <= 0) {
+        colorOperation = 1
+      }
 
-    if(colorOperation == 1) {
-      colorIndex ++
+      if(colorOperation == 1) {
+        colorIndex ++
+      } else {
+        colorIndex --
+      }
     } else {
-      colorIndex --
-    }
-  } else {
-    current_front = fullColorStack[colorIndex]
-    if(colorIndex >= fullColorStack.length - 1) {
-      colorOperation = 2
-    } 
-    if(colorIndex <= 0) {
-      colorOperation = 1
-    }
+      current_front = fullColorStack[colorIndex]
+      if(colorIndex >= fullColorStack.length - 1) {
+        colorOperation = 2
+      } 
+      if(colorIndex <= 0) {
+        colorOperation = 1
+      }
 
-    if(colorOperation == 1) {
-      colorIndex ++
-    } else {
-      colorIndex --
+      if(colorOperation == 1) {
+        colorIndex ++
+      } else {
+        colorIndex --
+      }
     }
   }
   wrap(render)
@@ -276,7 +277,7 @@ function wrap (render) {
   
   if(pulse_start) {
     real = pulse_path.shift() 
-    if(pulse_path.length >= pulse_num) {
+    if(pulse_path.length >= pulse_num * step_count) {
       pulse_erase = true
       pulse_fill = false
     } else {
@@ -297,6 +298,14 @@ function wrap (render) {
 
   render.dot(real)
   return res
+}
+
+function mouseClicked() {
+  loop()
+}
+
+function doubleClicked() {
+  noLoop()
 }
 
 function init_coordinates() {
@@ -322,7 +331,7 @@ function steps(df) {
       step_length = step_unit * step_count
     }
   } else {
-    if(growth_flag) {
+    if(growth_flag && !pulse_start) {
       df.optimize_position(STP)
       spawn(df, NEARL, 0.5)
     }

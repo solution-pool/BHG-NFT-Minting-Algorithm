@@ -59,8 +59,6 @@ function preload() {
   FRONT = coloroptions[COLOROPTION].FRONT
   BACK  = coloroptions[COLOROPTION].BACK
 
-  console.log(FRONT)
-
   make_full_color_stack()
   make_color_store()
 }
