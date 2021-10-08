@@ -189,7 +189,7 @@ function make_color_store() {
   } else {
     let stackLength = fullColorStack.length
     for(let i = 0; i < stackLength; i ++) {
-      if(fullColorStack[i].join(',') === fullColorStack[i].join[',']) {
+      if(fullColorStack[i].join(',') === FRONT.join(',')) {
         colorIndex = i
         break
       }
