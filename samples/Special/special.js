@@ -1,6 +1,6 @@
 let np_coords, np_vert_coords, growth_flag, DF, render, coloroptions, current_front
-let step_count = 1, step_length, color_count = 0, draw_path = [], pulse_path = [], pulse_num = 10, pulse_start = false, pulse_erase = false, pulse_fill = false
-let currendColorStore = [], colorIndex = 0, colorOperation = 1
+let step_count = 1, step_length, draw_path = [], pulse_path = [], pulse_num = 10, pulse_start = false, pulse_erase = false, pulse_fill = false
+let currendColorStore = [], colorIndex = 0, colorOperation = 1, fullColorStack = []
 
 function preload() {
   let colorLength = color.length
@@ -51,19 +51,46 @@ function preload() {
         color[((INDEX + 28) % colorLength)]
       ]
     },
+    9 : {
+      BACK : [0, 0, 0],
+      FRONT : color[(INDEX % colorLength)]
+    }
   }
   FRONT = coloroptions[COLOROPTION].FRONT
   BACK  = coloroptions[COLOROPTION].BACK
 
   console.log(FRONT)
 
+  make_full_color_stack()
   make_color_store()
+}
+
+function make_full_color_stack() {
+  for(let i = 0; i <256; i ++) {
+    fullColorStack.push([255, 0, i])
+  }
+  for(let i = 255; i >= 0; i --) {
+    fullColorStack.push([i, 0, 255])
+  }
+  for(let i = 0; i <256; i ++) {
+    fullColorStack.push([0, i, 255])
+  }
+  for(let i = 255; i >= 0; i --) {
+    fullColorStack.push([0, 255, i])
+  }
+  for(let i = 0; i <256; i ++) {
+    fullColorStack.push([i, 255, 0])
+  }
+  for(let i = 255; i >=0; i --) {
+    fullColorStack.push([255, i, 0])
+  }
 }
 
 function make_color_store() {
   if(COLOROPTION < 5)
     return
-  if(FRONT.length == 2) {
+
+  if(COLOROPTION == 5 || COLOROPTION == 6) {
     let first = FRONT[0]
     let last  = FRONT[1]
 
@@ -96,7 +123,8 @@ function make_color_store() {
         currendColorStore.push([last[0], last[1], i])
       }
     }
-  } else {
+  }
+  else if(COLOROPTION == 7 || COLOROPTION == 8) {
     let first = FRONT[0]
     let second = FRONT[1]
     let last  = FRONT[2]
@@ -160,6 +188,14 @@ function make_color_store() {
         currendColorStore.push([last[0], last[1], i])
       }
     }
+  } else {
+    let stackLength = fullColorStack.length
+    for(let i = 0; i < stackLength; i ++) {
+      if(fullColorStack[i].join(',') === fullColorStack[i].join[',']) {
+        colorIndex = i
+        break
+      }
+    }
   }
 }
 
@@ -177,10 +213,12 @@ function init_current_size() {
 function setup() {
   init_current_size()
   growth_flag = true
+  if(COLOROPTION < 9)
+    colorIndex  = 0
+
   Math.seedrandom(INDEX)
-  if(COLOROPTION > 4) {
-    current_front = FRONT[color_count]
-    color_count = (color_count + 1) % (FRONT.length)
+  if(COLOROPTION > 4 && COLOROPTION < 9) {
+    current_front = FRONT[0]
   } else {
     current_front = FRONT
   }
@@ -198,9 +236,23 @@ function setup() {
 function draw() {
   if(COLOROPTION < 5) {
     current_front = FRONT
-  } else {
+  } else if(COLOROPTION < 9 && COLOROPTION > 4) {
     current_front = currendColorStore[colorIndex]
     if(colorIndex >= currendColorStore.length - 1) {
+      colorOperation = 2
+    } 
+    if(colorIndex <= 0) {
+      colorOperation = 1
+    }
+
+    if(colorOperation == 1) {
+      colorIndex ++
+    } else {
+      colorIndex --
+    }
+  } else {
+    current_front = fullColorStack[colorIndex]
+    if(colorIndex >= fullColorStack.length - 1) {
       colorOperation = 2
     } 
     if(colorIndex <= 0) {
