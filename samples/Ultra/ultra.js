@@ -228,8 +228,21 @@ function setup() {
   for(let i = 0; i < INIT_NUM ; i ++ ) {
     angles.push(Math.random() * Math.PI )
   }
-  DF.init_circle_segment(MID, MID, INIT_RAD, angles)
+  angles.sort()
+  let xys = []
+  let lock_edges
+  for (let i = 0; i < angles.length; i ++) {
+    let a = angles[i]
+    let x = 0.5 + cos(a)*0.06
+    let y = 0.5 + sin(a)*0.06
+    xys.push([x,y])
+  }
+  xys.sort()
+
+  DF.init_line_segment(xys, lock_edges=1)
+
   render = new Render(REALSIZE, BACK, current_front)
+  // noLoop()
 }
 function draw() {
   if(COLOROPTION < 5) {
@@ -269,8 +282,8 @@ function draw() {
 function wrap (render) {
   init_coordinates()
   let res     = steps(DF)
-  let vert_num = DF.np_get_vert_coordinates(np_vert_coords)
-  let real  = np_vert_coords.slice(0, vert_num)
+  let num     = DF.np_get_edges_coordinates(np_coords)
+  let real  = np_coords.slice(0, num)
 
   if(pulse_start) {
     real = pulse_path.shift() 
@@ -293,7 +306,19 @@ function wrap (render) {
     }
   }
 
-  render.dot(real)
+  // render.clear_canvas()
+  for(let i = 0; i < real.length; i ++) {
+    let point = real[i]
+    let x1 = point[0]
+    let y1 = point[1]
+    let x2 = point[2]
+    let y2 = point[3]
+
+    let r =  render.pix / 3
+    render.circles(x1, y1, x2, y2, r)
+}
+  render.sandstroke(real)
+  // render.dot(real)
   return res
 }
 
