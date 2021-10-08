@@ -190,7 +190,7 @@ function make_color_store() {
   else {
     let stackLength = fullColorStack.length
     for(let i = 0; i < stackLength; i ++) {
-      if(fullColorStack[i].join(',') === fullColorStack[i].join[',']) {
+      if(fullColorStack[i].join(',') === FRONT.join(',')) {
         colorIndex = i
         break
       }
@@ -276,6 +276,13 @@ function wrap (render) {
     let real  = np_coords.slice(0, num)
     if(pulse_start) {
       real = pulse_path.shift() 
+      if(pulse_path.length >= pulse_num) {
+        pulse_erase = true
+        pulse_fill = false
+      } else {
+        pulse_erase = false
+        pulse_fill = true
+      }
     } else {
       if(growth_flag) {
         draw_path.push(real)
