@@ -230,8 +230,8 @@ function setup() {
     angles.push(Math.random() * TWOPI)
   }
   angles.sort()
-  DF.init_circle_segment(MID, MID, FARL * 0.2, angles)
-  render = new Render(REALSIZE, BACK, current_front)
+  DF.init_circle_segment(MID, MID, FARL * 0.1, angles)
+  render = new Render(SIZE, BACK, current_front)
 }
 
 function draw() {
@@ -276,7 +276,7 @@ function wrap (render) {
     let real  = np_coords.slice(0, num)
     if(pulse_start) {
       real = pulse_path.shift() 
-      if(pulse_path.length >= pulse_num) {
+      if(pulse_path.length >= pulse_num * step_count) {
         pulse_erase = true
         pulse_fill = false
       } else {
@@ -294,18 +294,7 @@ function wrap (render) {
         return
       }
     }
-
-    // render.clear_canvas()
-    // for(let i = 0; i < real.length; i ++) {
-    //     let point = real[i]
-    //     let x1 = point[0]
-    //     let y1 = point[1]
-    //     let x2 = point[2]
-    //     let y2 = point[3]
-
-    //     let r =  render.pix / 3
-    //     render.circles(x1, y1, x2, y2, r)
-    // }
+    
     render.sandstroke(real)
     if(Math.random() < 0.1) {
       let vert_num = DF.np_get_vert_coordinates(np_vert_coords)
@@ -341,17 +330,17 @@ function steps(df) {
   } else {
     if(growth_flag) {
       df.optimize_position(STP)
-      // spawn(df, NEARL, 0.03)
-      spawn_curl(df, NEARL)
+      spawn(df, NEARL, 0.8 * NEARL)
+      // spawn_curl(df, NEARL)
     }
     if(check_step(step_length, df)) {
       if(step_count < RYTHM - 1) {
         pulse_start = true
         let drawLength = draw_path.length
-        for(let i = 1; i <= pulse_num; i ++ ) {
+        for(let i = 1; i <= pulse_num * step_count; i ++ ) {
           pulse_path.push(draw_path[drawLength - i])
         }
-        for(let i = pulse_num; i > 0; i -- ) {
+        for(let i = pulse_num * step_count; i > 0; i -- ) {
           pulse_path.push(draw_path[drawLength - i])
         }
       } else {

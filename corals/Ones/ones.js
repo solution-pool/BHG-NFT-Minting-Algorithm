@@ -274,7 +274,7 @@ function wrap (render) {
     let real  = np_coords.slice(0, num)
     if(pulse_start) {
       real = pulse_path.shift() 
-      if(pulse_path.length >= pulse_num) {
+      if(pulse_path.length >= pulse_num * step_count) {
         pulse_erase = true
         pulse_fill = false
       } else {
@@ -292,6 +292,7 @@ function wrap (render) {
         return
       }
     }
+    
     render.sandstroke(real)
     if(Math.random() < 0.1) {
       let vert_num = DF.np_get_vert_coordinates(np_vert_coords)
@@ -334,10 +335,10 @@ function steps(df) {
       if(step_count < RYTHM - 1) {
         pulse_start = true
         let drawLength = draw_path.length
-        for(let i = 1; i <= pulse_num; i ++ ) {
+        for(let i = 1; i <= pulse_num * step_count; i ++ ) {
           pulse_path.push(draw_path[drawLength - i])
         }
-        for(let i = pulse_num; i > 0; i -- ) {
+        for(let i = pulse_num * step_count; i > 0; i -- ) {
           pulse_path.push(draw_path[drawLength - i])
         }
       } else {

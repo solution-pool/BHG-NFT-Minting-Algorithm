@@ -1,5 +1,5 @@
 let np_coords, np_vert_coords, growth_flag, DF, render, coloroptions, current_front
-let step_count = 1, step_length, draw_path = [], pulse_path = [], pulse_num = 5, pulse_start = false, pulse_erase = false, pulse_fill = false
+let step_count = 1, step_length, draw_path = [], pulse_path = [], pulse_num = 50, pulse_start = false, pulse_erase = false, pulse_fill = false
 let currendColorStore = [], colorIndex = 0, colorOperation = 1, fullColorStack = []
 
 function preload() {
@@ -228,8 +228,21 @@ function setup() {
   for(let i = 0; i < INIT_NUM ; i ++ ) {
     angles.push(Math.random() * Math.PI )
   }
-  DF.init_circle_segment(MID, MID, INIT_RAD, angles)
+  angles.sort()
+  let xys = []
+  let lock_edges
+  for (let i = 0; i < angles.length; i ++) {
+    let a = angles[i]
+    let x = 0.5 + cos(a)*0.05
+    let y = 0.5 + sin(a)*0.05
+    xys.push([x,y])
+  }
+  xys.sort()
+
+  DF.init_line_segment(xys, lock_edges=1)
+
   render = new Render(REALSIZE, BACK, current_front)
+  // noLoop()
 }
 function draw() {
   if(COLOROPTION < 5) {
@@ -269,12 +282,12 @@ function draw() {
 function wrap (render) {
   init_coordinates()
   let res     = steps(DF)
-  let vert_num = DF.np_get_vert_coordinates(np_vert_coords)
-  let real  = np_vert_coords.slice(0, vert_num)
+  let num     = DF.np_get_edges_coordinates(np_coords)
+  let real  = np_coords.slice(0, num)
 
   if(pulse_start) {
     real = pulse_path.shift() 
-    if(pulse_path.length >= pulse_num) {
+    if(pulse_path.length >= pulse_num * step_count) {
       pulse_erase = true
       pulse_fill = false
     } else {
@@ -293,7 +306,18 @@ function wrap (render) {
     }
   }
 
-  render.dot(real)
+  // render.clear_canvas()
+  for(let i = 0; i < real.length; i ++) {
+    let point = real[i]
+    let x1 = point[0]
+    let y1 = point[1]
+    let x2 = point[2]
+    let y2 = point[3]
+
+    let r =  render.pix / 3
+    render.circles(x1, y1, x2, y2, r, 2, true)
+}
+  // render.dot(real)
   return res
 }
 
@@ -328,10 +352,10 @@ function steps(df) {
       if(step_count < RYTHM - 1) {
         pulse_start = true
         let drawLength = draw_path.length
-        for(let i = 1; i <= pulse_num; i ++ ) {
+        for(let i = 1; i <= pulse_num * step_count; i ++ ) {
           pulse_path.push(draw_path[drawLength - i])
         }
-        for(let i = pulse_num; i > 0; i -- ) {
+        for(let i = pulse_num * step_count; i > 0; i -- ) {
           pulse_path.push(draw_path[drawLength - i])
         }
       } else {

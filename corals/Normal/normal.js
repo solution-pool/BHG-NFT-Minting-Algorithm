@@ -1,5 +1,5 @@
 let np_coords, np_vert_coords, growth_flag, DF, render, coloroptions, current_front
-let step_count = 1, step_length, draw_path = [], pulse_path = [], pulse_num = 50, pulse_start = false
+let step_count = 1, step_length, draw_path = [], pulse_path = [], pulse_num = 100, pulse_start = false, pulse_erase = false, pulse_fill = false
 let currendColorStore = [], colorIndex = 0, colorOperation = 1, fullColorStack = []
 
 function preload() {
@@ -274,9 +274,10 @@ function wrap (render) {
     let res     = steps(DF)
     let num     = DF.np_get_edges_coordinates(np_coords)
     let real  = np_coords.slice(0, num)
+
     if(pulse_start) {
       real = pulse_path.shift() 
-      if(pulse_path.length >= pulse_num) {
+      if(pulse_path.length >= pulse_num * step_count) {
         pulse_erase = true
         pulse_fill = false
       } else {
@@ -340,10 +341,10 @@ function steps(df) {
       if(step_count < RYTHM - 1) {
         pulse_start = true
         let drawLength = draw_path.length
-        for(let i = 1; i <= pulse_num; i ++ ) {
+        for(let i = 1; i <= pulse_num * step_count; i ++ ) {
           pulse_path.push(draw_path[drawLength - i])
         }
-        for(let i = pulse_num; i > 0; i -- ) {
+        for(let i = pulse_num * step_count; i > 0; i -- ) {
           pulse_path.push(draw_path[drawLength - i])
         }
       } else {
