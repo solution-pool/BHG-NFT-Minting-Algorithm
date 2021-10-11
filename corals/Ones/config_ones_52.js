@@ -1,21 +1,21 @@
 // Those variables contain the trait of the coral.
 
-const SIZE          = 800       // Growth size
+const SIZE          = 600       // Growth size
 const SPEED         = 1         // Growth speed
 const LOCATION      = 1         // Location
-const COLOROPTION   = 8         // Coloroption
+const COLOROPTION   = 3         // Coloroption
 const RYTHM         = 3         // Growth RYTHM
 
 // Those are the config value that the algorithm uses. Do not modify this value or the coral will be changed unexpectedly.
 
-const INDEX         = 52
+const INDEX         = 10
 const REALSIZE      = SIZE
-const NMAX          = 10 ** 6
+const NMAX          = 10 ** 4
 const ONE           = 1 / REALSIZE
-const STP           = 0.1 * ONE
+const STP           = ONE * 0.1
 const NEARL         = 10 * ONE
-const FARL          = 100 * ONE
-const INIT_RAD      = 20     * ONE
+const FARL          = 120 * ONE
+const INIT_RAD      = 20 * ONE
 const INIT_NUM      = 10
 const MID           = 0.5
 const TWOPI         = 2 * Math.PI
