@@ -10,7 +10,7 @@ const RYTHM         = 6         // Growth RYTHM
 
 const INDEX         = 1
 const REALSIZE      = SIZE
-const NMAX          = 10 ** 4
+const NMAX          = 10 ** 5
 const ONE           = 1 / REALSIZE
 const STP           = ONE
 const NEARL         = 4 * ONE
