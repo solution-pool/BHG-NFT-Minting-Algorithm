@@ -335,7 +335,7 @@ function steps(df) {
   } else {
     if(growth_flag) {
       df.optimize_position(STP)
-      spawn(df, NEARL, 0.03)
+      spawn(df, NEARL, 0.5)
     }
     if(check_step(step_length, df)) {
       if(step_count < RYTHM - 1) {
