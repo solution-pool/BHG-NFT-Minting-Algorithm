@@ -235,8 +235,8 @@ function setup() {
   let lock_edges
   for (let i = 0; i < angles.length; i ++) {
     let a = angles[i]
-    let x = 0.5 + cos(a)*0.06
-    let y = 0.5 + sin(a)*0.06
+    let x = 0.5 + cos(a)*0.05
+    let y = 0.5 + sin(a)*0.05
     xys.push([x,y])
   }
   xys.sort()
@@ -346,7 +346,7 @@ function steps(df) {
   } else {
     if(growth_flag) {
       df.optimize_position(STP)
-      spawn(df, NEARL, 0.03)
+      spawn(df, NEARL, 0.5)
     }
     if(check_step(step_length, df)) {
       if(step_count < RYTHM - 1) {
