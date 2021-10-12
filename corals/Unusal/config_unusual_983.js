@@ -1,6 +1,6 @@
 // Those variables contain the trait of the coral.
 
-const SIZE          = 400       // Growth size
+const SIZE          = 500       // Growth size
 const SPEED         = 1         // Growth speed
 const LOCATION      = 1         // Location
 const COLOROPTION   = 2         // Coloroption
@@ -13,8 +13,8 @@ const REALSIZE      = SIZE
 const NMAX          = 10 ** 4
 const ONE           = 1 / REALSIZE
 const STP           = ONE
-const NEARL         = 5 * ONE
-const FARL          = 30 * ONE
+const NEARL         = 2 * ONE
+const FARL          = 20 * ONE
 const INIT_RAD      = 6 * ONE
 const INIT_NUM      = 10
 const MID           = 0.5
