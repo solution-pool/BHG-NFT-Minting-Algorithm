@@ -1,10 +1,10 @@
 // Those variables contain the trait of the coral.
 
-const SIZE          = 500       // Growth size
+const SIZE          = 700       // Growth size
 const SPEED         = 1         // Growth speed
 const LOCATION      = 1         // Location
-const COLOROPTION   = 3         // Coloroption
-const RYTHM         = 3         // Growth RYTHM
+const COLOROPTION   = 4         // Coloroption
+const RYTHM         = 4         // Growth RYTHM
 
 // Those are the config value that the algorithm uses. Do not modify this value or the coral will be changed unexpectedly.
 
