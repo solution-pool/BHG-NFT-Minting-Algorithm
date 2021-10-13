@@ -235,8 +235,8 @@ function setup() {
   let lock_edges
   for (let i = 0; i < angles.length; i ++) {
     let a = angles[i]
-    let x = 0.5 + cos(a)*0.055
-    let y = 0.5 + sin(a)*0.055
+    let x = 0.5 + cos(a)*0.05
+    let y = 0.5 + sin(a)*0.05
     xys.push([x,y])
   }
   xys.sort()
