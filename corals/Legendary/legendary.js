@@ -228,7 +228,17 @@ function setup() {
   for(let i = 0; i < INIT_NUM ; i ++ ) {
     angles.push(Math.random() * TWOPI)
   }
-  DF.init_circle_segment(MID, MID, INIT_RAD, angles)
+  let xys = []
+  let lock_edges
+  for (let i = 0; i < angles.length; i ++) {
+    let a = angles[i]
+    let x = 0.5 + cos(a)*0.06
+    let y = 0.5 + sin(a)*0.06
+    xys.push([x,y])
+  }
+  xys.sort()
+
+  DF.init_line_segment(xys, lock_edges=1)
   render = new Render(REALSIZE, BACK, current_front)
 }
 
