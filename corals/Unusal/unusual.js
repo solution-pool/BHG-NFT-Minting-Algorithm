@@ -1,6 +1,6 @@
 let np_coords, np_vert_coords, growth_flag, DF, render, coloroptions, current_front
-let step_count = 1, step_length, draw_path = [], pulse_path = [], pulse_num = 100, pulse_start = false
-let currendColorStore = [], colorIndex = 0, colorOperation = 1, fullColorStack = []
+let step_count = 1, step_length, draw_path = [], pulse_path = [], pulse_num = parseInt(SIZE / 30), pulse_start = false
+let currendColorStore = [], colorIndex = 0, colorOperation = 1, fullColorStack = [], cross
 
 function preload() {
   let colorLength = color.length
@@ -209,7 +209,16 @@ function init_current_size() {
   }
 }
 
+function init_cross_value() {
+  if(RYTHM < 3) {
+    cross  = 0.2
+  } else {
+    cross = 0.5 / (RYTHM - 1) -  0.02
+  }
+}
+
 function setup() {
+  init_cross_value()
   init_current_size()
   growth_flag = true
   if(COLOROPTION < 9)
@@ -234,8 +243,8 @@ function setup() {
   let lock_edges
   for (let i = 0; i < angles.length; i ++) {
     let a = angles[i]
-    let x = 0.5 + cos(a)*0.05
-    let y = 0.5 + sin(a)*0.05
+    let x = 0.5 + cos(a) * cross
+    let y = 0.5 + sin(a) * cross
     xys.push([x,y])
   }
   xys.sort()
