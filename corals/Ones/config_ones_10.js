@@ -3,20 +3,20 @@
 const SIZE          = 400       // Growth size
 const SPEED         = 1         // Growth speed
 const LOCATION      = 1         // Location
-const COLOROPTION   = 1         // Coloroption
-const RYTHM         = 2         // Growth RYTHM
+const COLOROPTION   = 8         // Coloroption
+const RYTHM         = 7         // Growth RYTHM
 
 // Those are the config value that the algorithm uses. Do not modify this value or the coral will be changed unexpectedly.
 
-const INDEX         = 20
+const INDEX         = 10
 const REALSIZE      = SIZE
 const NMAX          = 10 ** 6
 const ONE           = 1 / REALSIZE
 const STP           = 0.1 * ONE
 const NEARL         = 10 * ONE
 const FARL          = 100 * ONE
-const INIT_RAD      = 20     * ONE
-const INIT_NUM      = 10
+const INIT_RAD      = 7 * ONE
+const INIT_NUM      = 6
 const MID           = 0.5
 const TWOPI         = 2 * Math.PI
 let FRONT, BACK, CURRENTSIZE
