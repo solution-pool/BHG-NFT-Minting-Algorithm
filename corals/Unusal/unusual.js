@@ -370,6 +370,12 @@ function steps(df) {
         if(RYTHM == 1) {
           noLoop()
         }
+
+        if(growth_flag) {
+          noLoop()
+          sleep(parseInt(RYTHM + 1) * 1000)
+          loop()
+        }
         growth_flag = false
       }
     }
