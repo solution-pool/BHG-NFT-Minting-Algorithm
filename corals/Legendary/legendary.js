@@ -1,5 +1,5 @@
 let np_coords, np_vert_coords, growth_flag, DF, render, coloroptions, current_front
-let step_count = 1, step_length, draw_path = [], pulse_path = [], pulse_num = 50, pulse_start = false, pulse_erase = false, pulse_fill = false
+let step_count = 1, step_length, draw_path = [], pulse_path = [], pulse_num = 10, pulse_start = false, pulse_erase = false, pulse_fill = false
 let currendColorStore = [], colorIndex = 0, colorOperation = 1, fullColorStack = []
 
 function preload() {
@@ -200,9 +200,9 @@ function make_color_store() {
 function init_current_size() {
   step_count = 1
   if(RYTHM > 2) {
-    CURRENTSIZE   = parseInt(REALSIZE / (RYTHM - 1))
-    step_unit   = CURRENTSIZE
-    step_length = CURRENTSIZE
+    CURRENTSIZE = REALSIZE
+    step_unit   = parseInt(REALSIZE / (RYTHM - 1))
+    step_length = parseInt(REALSIZE / (RYTHM - 1))
   } else {
     step_length = step_unit = CURRENTSIZE = REALSIZE
   }
@@ -357,10 +357,9 @@ function steps(df) {
 }
 
 function check_step(step, df) {
-  let temp = CURRENTSIZE
   CURRENTSIZE = step
   let result = df.safe_vertex_positions(3 * STP) < 0
-  CURRENTSIZE = temp
+  CURRENTSIZE = REALSIZE
   return result
 }
 

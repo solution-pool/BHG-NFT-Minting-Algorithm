@@ -7,11 +7,11 @@ class Zonemap {
     this.Z                      = []
 
     this.vnum                   = 0
-    this.vsize                  = CURRENTSIZE
+    this.vsize                  = REALSIZE
 
     this.nz                     = nz
     this.total_zones            = nz*nz
-    this.greatest_zone_size     = CURRENTSIZE
+    this.greatest_zone_size     = REALSIZE
     
     this.__init_zones()
   }
@@ -23,7 +23,7 @@ class Zonemap {
       let z = []
 
       z.i = i
-      z.size = CURRENTSIZE
+      z.size = REALSIZE
       z.count = 0
       z.ZV = []
 
