@@ -1,5 +1,5 @@
 let np_coords, np_vert_coords, growth_flag, DF, render, coloroptions, current_front
-let step_count = 1, step_length, draw_path = [], pulse_path = [], pulse_num = 100, pulse_start = false, pulse_erase = false, pulse_fill = false
+let step_count = 1, step_length, draw_path = [], pulse_path = [], pulse_num = parseInt(SIZE / (RYTHM + 1)), pulse_start = false, pulse_erase = false, pulse_fill = false
 let currendColorStore = [], colorIndex = 0, colorOperation = 1, fullColorStack = []
 
 function preload() {
@@ -228,7 +228,7 @@ function setup() {
     angles.push(Math.random() * TWOPI)
   }
   angles.sort()
-  DF.init_circle_segment(MID, MID, FARL * 0.2, angles)
+  DF.init_circle_segment(MID, MID, FARL * 0.2 * (SIZE / 400), angles)
   render = new Render(REALSIZE, BACK, current_front)
 }
 
