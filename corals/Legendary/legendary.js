@@ -217,6 +217,9 @@ function init_cross_value() {
 }
 
 function setup() {
+  if(SIZE < 800) {
+    frameRate(10 + parseInt((SIZE - 400) / 10)) 
+  }
   init_cross_value()
   init_current_size()
   growth_flag = true
