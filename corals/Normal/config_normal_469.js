@@ -16,7 +16,7 @@ const STP           = ONE
 const NEARL         = 3 * ONE
 const FARL          = 30 * ONE
 const INIT_RAD      = 5 * ONE
-const INIT_NUM      = 7
+const INIT_NUM      = 5
 const MID           = 0.5
 const TWOPI         = 2 * Math.PI
 let FRONT, BACK, CURRENTSIZE

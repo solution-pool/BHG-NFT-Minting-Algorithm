@@ -215,7 +215,7 @@ function setup() {
   if(COLOROPTION < 9) 
     colorIndex  = 0
     
-  Math.seedrandom(INDEX + 1)
+  Math.seedrandom(INDEX)
   if(COLOROPTION > 4 && COLOROPTION < 9) {
     current_front = FRONT[0]
   } else {
