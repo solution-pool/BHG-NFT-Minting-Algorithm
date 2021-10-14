@@ -1,5 +1,5 @@
 let np_coords, np_vert_coords, growth_flag, DF, render, coloroptions, current_front
-let step_count = 1, step_length, draw_path = [], pulse_path = [], pulse_num = 100, pulse_start = false, pulse_erase = false, pulse_fill = false
+let step_count = 1, step_length, draw_path = [], pulse_path = [], pulse_num = parseInt(SIZE / 30), pulse_start = false, pulse_erase = false, pulse_fill = false
 let currendColorStore = [], colorIndex = 0, colorOperation = 1, fullColorStack = []
 
 function preload() {
@@ -215,7 +215,7 @@ function setup() {
   if(COLOROPTION < 9) 
     colorIndex  = 0
     
-  Math.seedrandom(INDEX)
+  Math.seedrandom(INDEX + 1)
   if(COLOROPTION > 4 && COLOROPTION < 9) {
     current_front = FRONT[0]
   } else {
