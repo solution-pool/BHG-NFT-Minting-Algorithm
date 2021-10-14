@@ -15,8 +15,8 @@ const ONE           = 1 / REALSIZE
 const STP           = ONE
 const NEARL         = 10 * ONE
 const FARL          = 60 * ONE
-const INIT_RAD      = 1 * ONE
-const INIT_NUM      = 5
+const INIT_RAD      = 6 * ONE
+const INIT_NUM      = 6
 const MID           = 0.5
 const TWOPI         = 2 * Math.PI
 let FRONT, BACK, CURRENTSIZE
