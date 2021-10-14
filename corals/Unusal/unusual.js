@@ -1,5 +1,5 @@
 let np_coords, np_vert_coords, growth_flag, DF, render, coloroptions, current_front
-let step_count = 1, step_length, draw_path = [], pulse_path = [], pulse_num = parseInt(SIZE / 30), pulse_start = false
+let step_count = 1, step_length, draw_path = [], pulse_path = [], pulse_num = parseInt(SIZE / 40), pulse_start = false
 let currendColorStore = [], colorIndex = 0, colorOperation = 1, fullColorStack = [], cross
 
 function preload() {
