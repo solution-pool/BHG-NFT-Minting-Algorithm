@@ -210,6 +210,9 @@ function init_current_size() {
 }
 
 function setup() {
+  if(SIZE < 800) {
+    frameRate(10 + parseInt((SIZE - 400) / 10)) 
+  }
   init_current_size()
   growth_flag = true
   if(COLOROPTION < 9)
