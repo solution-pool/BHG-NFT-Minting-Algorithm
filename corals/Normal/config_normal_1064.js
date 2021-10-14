@@ -3,7 +3,7 @@
 const SIZE          = 500       // Growth size
 const SPEED         = 1         // Growth speed
 const LOCATION      = 1         // Location
-const COLOROPTION   = 2         // Coloroption
+const COLOROPTION   = 6         // Coloroption
 const RYTHM         = 2         // Growth RYTHM
 
 // Those are the config value that the algorithm uses. Do not modify this value or the coral will be changed unexpectedly.
