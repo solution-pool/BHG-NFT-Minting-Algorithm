@@ -40,7 +40,7 @@ function _d(df, limit, prob_spawn=1.0) {
 
     for(let e = 0; e < edgeNumber; e ++) {
         try {
-            let t = df._v(e)
+            let t = df._z(e)
             ind_curv[e] = t
             tot_curv += t
             max_curv = Math.max(max_curv, t)

@@ -44,7 +44,7 @@ const color = [
 ]
 
 function _h() {
-    ctx.fillStyle = BACK
+    ctx.fillStyle = 'rgb(' + BACK.toString() + ')'
     ctx.fillRect(0,0,RS,RS)
 }
 
@@ -62,24 +62,26 @@ function _i(x1, y1, x2, y2, r, nmin = 2, fill=false) {
     for(let i = 0; i < scale.length; i ++ ) {
         let xp = x1 - scale[i] * Math.cos(a)
         let yp = y1 - scale[i] * Math.sin(a)
+        ctx.beginPath()
         if(fill) {
             if(!gf || pe) {
-                ctx.strokeStyle = BACK
+                ctx.strokeStyle = 'rgb(' + BACK.toString() + ')'
             } else {
                 if(CO < 5) {
-                    ctx.strokeStyle = FRONT
+                    ctx.strokeStyle = 'rgb(' + FRONT.toString() + ')'
                 } else {
-                    ctx.strokeStyle = cf
+                    ctx.strokeStyle = 'rgb(' + cf.toString() + ')'
                 }
             }
         } else {
             if(CO < 5) {
-                ctx.strokeStyle = FRONT
+                ctx.strokeStyle = 'rgb(' + FRONT.toString() + ')'
             } else {
-                ctx.strokeStyle = cf
+                ctx.strokeStyle = 'rgb(' + cf.toString() + ')'
             }
         }
         ctx.arc(xp * RS, yp * RS, r * RS, 0, TWOPI)
+        ctx.stroke()
     }
 }
 
@@ -96,12 +98,12 @@ function _k(xys) {
         let x = point[0]
         let y =  point[1]
         if(!gf || pe) {
-            ctx.strokeStyle = BACK
+            ctx.strokeStyle = 'rgb(' + BACK.toString() + ')'
         } else {
             if(CO < 5) {
-                ctx.strokeStyle = FRONT
+                ctx.strokeStyle = 'rgb(' + FRONT.toString() + ')'
             } else {
-                ctx.strokeStyle = cf
+                ctx.strokeStyle = 'rgb(' + cf.toString() + ')'
             }
         }
         ctx.strokeRect(x * RS,y * RS, ONE * RS, ONE * RS)
@@ -123,12 +125,12 @@ function _l(xys) {
         let y = point[1] + direct[1] * random
         
         if(!gf || pe) {
-            ctx.strokeStyle = BACK
+            ctx.strokeStyle = 'rgb(' + BACK.toString() + ')'
         } else {
             if(CO < 5) {
-                ctx.strokeStyle = FRONT
+                ctx.strokeStyle = 'rgb(' + FRONT.toString() + ')'
             } else {
-                ctx.strokeStyle = cf
+                ctx.strokeStyle = 'rgb(' + cf.toString() + ')'
             }
         }
         strokeRect(x * RS, y * RS, ONE * RS, ONE * RS);
