@@ -1,0 +1,1151 @@
+<canvas id="canvas"></canvas><script>
+    // Those variables contain the trait of the coral.
+
+const SIZE          = 400       // Growth size
+const CO   = 4         // Coloroption
+const RYTHM         = 7         // Growth RYTHM
+
+// Those are the config value that the algorithm uses. Do not modify this value or the coral will be changed unexpectedly.
+
+const INDEX         = 1
+const RS      = SIZE
+const NMAX          = 10 ** 4
+const ONE           = 1 / RS
+const STP           = ONE
+const NEARL         = 10 * ONE
+const FARL          = 110 * ONE
+const INIT_RAD      = 3 * ONE
+const INIT_NUM      = 9
+const MID           = 0.5
+const TWOPI         = 2 * Math.PI
+let FRONT, BACK, CS
+
+    class Zonemap {
+
+constructor(nz) {
+  nz = parseInt(nz)
+  const total_zones = nz ** 2
+  this.VZ                     = []
+  this.Z                      = []
+
+  this.vnum                   = 0
+  this.vsize                  = RS
+
+  this.nz                     = nz
+  this.total_zones            = nz*nz
+  this.greatest_zone_size     = RS
+
+  for (let i = 0; i < this.total_zones ; i ++) {
+
+    let z = []
+
+    z.i = i
+    z.size = RS
+    z.count = 0
+    z.ZV = []
+
+    this.Z[i] = z
+  }
+}
+_ac(X,Y) {
+
+  this.X = X
+  this.Y = Y
+
+  return
+}
+_ad(v1) {
+  v1 = parseInt(v1)
+  let vnum = this.vnum
+
+  const x = this.X[v1]
+  const y = this.Y[v1]
+
+  const z1 = this._ai(x,y)
+
+  this._af(z1, vnum)
+  this.VZ[vnum] = z1
+
+  const new_vz = []
+  
+  if (this.vnum>=this.vsize-1) {
+    this.VZ = new_vz;
+    this.vsize = this.vsize*2
+  }
+
+  this.vnum += 1
+  return vnum
+}
+_ae(v1) {
+
+  v1 = parseInt(v1)
+  this._ah(this.VZ[v1], v1)
+  this.VZ[v1] = -1
+
+  return 1
+}
+_af(z1, v1) {
+  
+  z1 = parseInt(z1)
+  v1 = parseInt(v1)
+
+  let z = this.Z[z1]
+  if(z == undefined) {
+    z = []
+    z.count = 0
+    z.ZV = []
+    z.i = 0
+    z.size = SIZE
+
+    this.Z.push(z)
+  }
+  z.ZV[z.count] = v1
+  z.count += 1
+
+  if (z.count>=z.size-1) {
+    return this._ag(z)
+  }
+
+  return 1
+}
+_ag(z) {
+
+  let new_size = z.size*2
+  const new_zv = []
+    z.ZV = new_zv;
+    z.size = new_size
+    if (new_size>this.greatest_zone_size) {
+      this.greatest_zone_size = new_size
+    }
+
+    this.Z.push(z)
+  return 1
+}
+_ah(z1, v1) {
+  z1 = parseInt(z1)
+  v1 = parseInt(v1)
+
+  let z = this.Z[z1]
+  for (let i = 0; i < z.count ;  i ++) {
+
+    if (z.ZV[i] == v1) {
+      z.ZV[i] = z.ZV[z.count-1]
+      z.count -= 1
+      return 1
+    }
+  }
+
+  return -1
+}
+_ai(x, y) {
+
+  const nz = this.nz
+
+  const i = parseInt(x*nz)
+  const j = parseInt(y*nz)
+  const z = nz*i + j
+
+  return z
+}
+_aj(v1) {
+  v1 = parseInt(v1)
+  const x = this.X[v1]
+  const y = this.Y[v1]
+  const new_z = parseInt(this._ai(x, y))
+  const old_z = parseInt(this.VZ[v1])
+
+  if (old_z<0) {
+    return -1
+  }
+
+  if (new_z != old_z) {
+    this._ah(old_z, v1)
+    this._af(new_z, v1)
+    this.VZ[v1] = new_z
+
+    return 1
+  }
+
+  return -1
+}
+_ak(x, y, rad, vertices) {
+
+  const nz = this.nz
+
+  const zx = parseInt(x*nz)
+  const zy = parseInt(y*nz)
+
+  let num = 0
+
+  const rad2 = rad*rad
+
+
+  for (let a = Math.max(zx-1,0); a < Math.min(zx+2,nz); a ++) {
+    for (let b = Math.max(zy-1,0); b < Math.min(zy+2,nz); b ++ ) {
+      
+      const z = this.Z[a*nz+b]
+
+      for (let i = 0; i < z.count; i ++) {
+
+        const dx = x-this.X[z.ZV[i]]
+        const dy = y-this.Y[z.ZV[i]]
+
+        if (dx*dx+dy*dy<rad2) {
+
+          vertices[num] = z.ZV[i]
+          num += 1
+        }
+      }
+    }
+  }
+  return num
+}
+}
+class Segments {
+
+constructor(nmax, zonewidth) {
+    this.X = []
+    _e(this.X, nmax, 0)
+    this.Y = []
+    _e(this.Y, nmax, 0)
+    this.VA =  []
+    _e(this.VA, nmax, 0)
+    this.VS = []
+    _e(this.VS, nmax, -1)
+    this.EV = []
+    _e(this.EV, 2*nmax, -1)
+    this.VE = []
+    _e(this.VE, 2* nmax, -1)
+
+    this.nmax = nmax
+
+    this.vnum = 0
+
+    this.edgeNumber = 0
+
+    this.snum = 0
+
+    this.zonewidth = zonewidth
+
+    this.nz = 1.0 /zonewidth
+
+    if (this.nz<3) {
+        this.nz = 1
+        this.zonewidth = 1.0
+    }
+
+    this.zonemap = new Zonemap(this.nz)
+    this.zonemap._ac(this.X, this.Y)
+}
+_m(x,  y) {
+    if (x<0 || x>1 || y<0 || y>1) 
+        return -1
+    return 1
+}
+_n(x, y, s, p) {
+    if (this._m(x,y)<0) {
+        throw new Error("Vertext outside unit square.")
+    }
+
+    const vnum = this.vnum
+    
+    this.X[vnum] = x
+    this.Y[vnum] = y
+    this.VA[vnum] = 1
+    this.VS[vnum] = s
+
+    this.zonemap._ad(vnum)
+
+    this.vnum = vnum + 1
+    return vnum
+}
+
+_o(v1,  v2) {
+    if (v1<0 || v1>this.vnum-1 || this.VA[v1]<0) {
+      return -1
+    }
+
+    if (v2<0 || v2>this.vnum-1 || this.VA[v2]<0) {
+      return -1
+    }
+
+    return 1
+}
+
+_p(v1,  v2) {
+    v1 = parseInt(v1)
+    v2 = parseInt(v2)
+    const edgeNumber = this.edgeNumber
+    if (this._o(v1,v2)<0) {
+        throw new Error("invalid vertex in _p v1, v2, " + v1 + ',' + v2)
+    }
+
+    this.EV[2*edgeNumber] = v1
+    this.EV[2*edgeNumber+1] = v2
+
+    _f(v1, edgeNumber, this.VE)
+    _f(v2, edgeNumber, this.VE)
+
+    this.edgeNumber += 1
+    return edgeNumber
+}
+
+_q(e1) {
+
+    if (this.EV[2*e1]>-1 && this.EV[2*e1+1]>-1) {
+        return 1
+    }
+    else {
+        return -1
+    }
+}
+
+_r(v1) {
+
+    this.VA[v1] = -1
+
+    this.zonemap._ae(v1)
+
+    return 1
+}
+
+_s(e1) {
+
+    if (e1<0 || e1>this.edgeNumber-1) {
+        throw new Error("invalid edge in _s e1" + e1)
+    }
+
+    let v1 = this.EV[2*e1]
+    let v2 = this.EV[2*e1+1]
+
+    this.EV[2*e1] = -1
+    this.EV[2*e1+1] = -1
+
+    if (v1>-1) {
+      _g(v1, e1, this.VE)
+    }
+    if (v2>-1) {
+      _g(v2, e1, this.VE)
+    }
+
+    return 1
+  }
+
+_u(a) {
+
+    let vnum = this.vnum
+    let n = 0
+
+    for (let v = 0; v < vnum; v ++) {
+
+        if (this.VA[v]>-1) {
+
+            a[n][0] = this.X[v]
+            a[n][1] = this.Y[v]
+            n+=1
+        }
+    }
+
+    return n
+}
+
+_v(e1) {
+
+  let nx = this.X[this.EV[2*e1]] - this.X[this.EV[2*e1+1]]
+  let ny = this.Y[this.EV[2*e1]] - this.Y[this.EV[2*e1+1]]
+  let length = Math.sqrt(nx*nx+ny*ny)
+
+  return length
+}
+
+_x(x, y, r, angles) {
+  
+  let vertices = []
+  let snum = this.snum
+
+  let num_angles = angles.length
+
+  for (let i = 0; i < num_angles; i ++) {
+    const the = angles[i]
+
+    const xx = x + Math.cos(the)*r
+    const yy = y + Math.sin(the)*r
+
+    vertices.push(this._n(xx,yy,snum,1))
+  }
+
+  for (let i = 0; i < vertices.length-1; i ++) {
+    this._p(vertices[i],vertices[i+1])
+  }
+
+  this._p(vertices[0],vertices[num_angles-1])
+  this.snum = snum+1
+}
+
+_y(e1, minimum_length=-1) {
+  if (this._q(e1)<0) {
+    throw new Error("e1 does not exist")
+  }
+  if (e1<0) {
+    throw new Error("invalid edge in _y e1" + e1)
+  }
+
+  let v1 = this.EV[2*e1]
+  let v2 = this.EV[2*e1+1]
+
+  let s = this.VS[v1]
+
+  if (s<0) {
+    throw new Error("Invalid segment id.")
+  }
+
+  if (minimum_length>0) {
+    let dx = this.X[v1] - this.X[v2]
+    let dy = this.Y[v1] - this.Y[v2]
+
+    if (dx*dx+dy*dy<minimum_length*minimum_length) {
+      throw new Error("edge too short, e1," + e1)
+    }
+  }
+
+  let midx = (this.X[v1] + this.X[v2])*0.5
+  let midy = (this.Y[v1] + this.Y[v2])*0.5
+
+  let v3 = this._n(midx,midy,s,1)
+  this._s(e1)
+
+  this._p(v1,v3)
+  this._p(v2,v3)
+
+  return 1
+}
+
+_aa(limit) {
+  let vnum = this.vnum
+  for (let i = 0 ; i < vnum ; i ++) {
+      if( this.X[i] < ((RS - CS) / 2 / RS + limit) || this.X[i] > (1 - (RS - CS) / 2 / RS - limit) ) {
+        return - 1
+      }
+      if(this.Y[i] < ((RS - CS) / 2 / RS + limit) || this.Y[i] > (1 - (RS - CS) / 2 / RS - limit)) {
+          return -1
+      }
+  }
+  return 1
+}
+
+_ab() {
+    return this.edgeNumber
+}
+}
+class DifferentialLine extends Segments {
+
+constructor(nmax, zonewidth, nearl, farl) {
+    super(nmax, zonewidth)
+
+    this.SX = []
+    this.SY = []
+    this.SD = []
+
+    this.nearl = nearl
+    this.farl = farl
+}
+
+_a(step) {
+    let vertices = []
+    const vnumCount = this.vnum
+    for(let v = 0; v < vnumCount; v ++ ) {
+        this.SX[v] = 0.0
+        this.SY[v] = 0.0
+
+        let num = this.zonemap._ak(
+            this.X[v],
+            this.Y[v],
+            this.farl,
+            vertices
+        )
+        this._b(
+            v, 
+            vertices,
+            num, 
+            step,
+            this.SX,
+            this.SY
+        )
+
+    }
+    for (let v = 0; v < vnumCount ; v ++) {
+        if(this.VA[v] < 0) {
+            continue
+        }
+
+        this.X[v] = this.X[v] + this.SX[v]
+        this.Y[v] = this.Y[v] + this.SY[v]
+    }
+
+    for(let v = 0; v < vnumCount; v ++) {
+        if(this.VA[v] < 0) {
+            continue
+        }
+        try {
+            this.zonemap._aj(v)
+        }
+        catch {
+        }
+    }
+}
+
+_b(v, vertices, num, step, sx, sy) {
+    if(this.VA[v] < 1) {
+        return -1
+    }
+
+    let e1 = this.VE[2*v]
+    let e2 = this.VE[2*v + 1]
+    let v1, v2
+    // connected vertices to v, v1 and v2
+    if(this.EV[2*e1] == v) {
+        v1 = this.EV[2*e1 + 1]
+    } else {
+        v1 = this.EV[2*e1]
+    }
+
+    if(this.EV[2*e2] == v) {
+        v2 = this.EV[2*e2 + 1]
+    } else {
+        v2 =  this.EV[2*e2]
+    }
+
+    let resx = 0
+    let resy = 0
+
+    for(let k = 0; k < num; k ++) {
+        let neigh =  vertices[k]
+        let dx = this.X[v] - this.X[neigh]
+        let dy =  this.Y[v] -  this.Y[neigh]
+
+        let nrm = Math.sqrt(dx * dx + dy * dy)
+
+        if(neigh == v1 || neigh == v2) {
+            if(nrm < this.nearl || nrm <= 0) {
+                continue
+            }
+
+            resx += -dx/nrm *step
+            resy += -dy/nrm * step
+        } else {
+            if(nrm > this.farl || nrm <= 0) {
+                continue
+            }
+            resx += dx * (this.farl/nrm -1) *step
+            resy += dy * (this.farl/nrm-1)*step
+        }
+    }
+    sx[v] += resx
+    sy[v] += resy
+
+    return 1
+
+}
+}
+function _c (df, d, limit) {
+    const edgeNumber  = df._ab()
+    let rnd = []
+    let rndmask = []
+    for(let i = 0; i < edgeNumber ; i ++) {
+        rnd.push(Math.random())
+    }
+
+    const rndLength = rnd.length
+    for(i = 0; i < rndLength ; i ++) {
+        if(rnd[i] > limit || !rnd[i]) {
+            continue
+        }
+
+        rndmask.push(i)
+    }
+    let rndmaskLength = rndmask.length
+    
+    for(let i = 0 ; i < rndmaskLength; i ++) {
+        let l = df._v(rndmask[i])
+
+        if(l < d) {
+            continue
+        }
+
+        try {
+            df._y(rndmask[i])
+        } 
+        catch(e) {
+            continue
+        }
+    }
+}
+
+function _e(a, n, v) {
+    for(let i = 0; i < n; i ++) {
+        a[i] = v
+    }
+
+    return a
+}
+
+function _f(v, e, ve) {
+    if(ve[2*v] < 0) {
+        ve[2*v] = e
+    } else {
+        ve[2*v + 1] = e
+    }
+}
+
+function _g(v, e, ve) {
+    if(ve[2*v] == e ) {
+        ve[2*v] = ve[2*v + 1]
+        ve[2*v + 1] = -1
+    } else if(ve[2*v + 1] == e) {
+        ve[2*v + 1] = -1
+    }
+
+    return ve
+}
+!function(a, b, c, d, e, f, g, h, i) {
+    function j(a) {
+        var b, c = a.length, e = this, f = 0, g = e.i = e.j = 0, h = e.S = [];
+        for (c || (a = [c++]); d > f; )
+            h[f] = f++;
+        for (f = 0; d > f; f++)
+            h[f] = h[g = s & g + a[f % c] + (b = h[f])],
+            h[g] = b;
+        (e.g = function(a) {
+            for (var b, c = 0, f = e.i, g = e.j, h = e.S; a--; )
+                b = h[f = s & f + 1],
+                c = c * d + h[s & (h[f] = h[g = s & g + b]) + (h[g] = b)];
+            return e.i = f,
+            e.j = g,
+            c
+        }
+        )(d)
+    }
+    function k(a, b) {
+        var c, d = [], e = typeof a;
+        if (b && "object" == e)
+            for (c in a)
+                try {
+                    d.push(k(a[c], b - 1))
+                } catch (f) {}
+        return d.length ? d : "string" == e ? a : a + "\0"
+    }
+    function l(a, b) {
+        for (var c, d = a + "", e = 0; e < d.length; )
+            b[s & e] = s & (c ^= 19 * b[s & e]) + d.charCodeAt(e++);
+        return n(b)
+    }
+    function m(c) {
+        try {
+            return o ? n(o.randomBytes(d)) : (a.crypto.getRandomValues(c = new Uint8Array(d)),
+            n(c))
+        } catch (e) {
+            return [+new Date, a, (c = a.navigator) && c.plugins, a.screen, n(b)]
+        }
+    }
+    function n(a) {
+        return String.fromCharCode.apply(0, a)
+    }
+    var o, p = c.pow(d, e), q = c.pow(2, f), r = 2 * q, s = d - 1, t = c["seed" + i] = function(a, f, g) {
+        var h = [];
+        f = 1 == f ? {
+            entropy: !0
+        } : f || {};
+        var o = l(k(f.entropy ? [a, n(b)] : null == a ? m() : a, 3), h)
+          , s = new j(h);
+        return l(n(s.S), b),
+        (f.pass || g || function(a, b, d) {
+            return d ? (c[i] = a,
+            b) : a
+        }
+        )(function() {
+            for (var a = s.g(e), b = p, c = 0; q > a; )
+                a = (a + c) * d,
+                b *= d,
+                c = s.g(1);
+            for (; a >= r; )
+                a /= 2,
+                b /= 2,
+                c >>>= 1;
+            return (a + c) / b
+        }, o, "global"in f ? f.global : this == c)
+    }
+    ;
+    if (l(c[i](), b),
+    g && g.exports) {
+        g.exports = t;
+        try {
+            o = require("crypto")
+        } catch (u) {}
+    } else
+        h && h.amd && h(function() {
+            return t
+        })
+}(this, [], Math, 256, 6, 52, "object" == typeof module && module, "function" == typeof define && define, "random");
+const color = [
+    [255, 0 , 0],
+    [255, 0 , 36],
+    [255, 0 , 72],
+    [255, 0 , 108],
+    [255, 0 , 144],
+    [255, 0 , 180],
+    [255, 0 , 216],
+    [255, 0 , 255],
+    [216, 0 , 255],
+    [180, 0 , 255],
+    [144, 0 , 255],
+    [108, 0 , 255],
+    [72, 0 , 255],
+    [36, 0 , 255],
+    [0, 0 , 255],
+    [0, 36 , 255],
+    [0, 72 , 255],
+    [0, 108 , 255],
+    [0, 144 , 255],
+    [0, 180 , 255],
+    [0, 216 , 255],
+    [0, 255 , 255],
+    [0, 255 , 216],
+    [0, 255 , 180],
+    [0, 255 , 144],
+    [0, 255 , 108],
+    [0, 255 , 72],
+    [0, 255 , 36],
+    [0, 255 , 0],
+    [36, 255 , 0],
+    [72, 255 , 0],
+    [108, 255 , 0],
+    [144, 255 , 0],
+    [180, 255 , 0],
+    [216, 255 , 0],
+    [255, 255 , 0],
+    [255, 216 , 0],
+    [255, 180 , 0],
+    [255, 144 , 0],
+    [255, 108 , 0],
+    [255, 72 , 0],
+    [255, 36 , 0],
+]
+
+function _h() {
+    ctx.fillStyle = 'rgb(' + BACK.toString() + ')'
+    ctx.fillRect(0,0,RS,RS)
+}
+
+function _k(xys) {
+    let xyLength = xys.length
+    for(let i = 0; i < xyLength; i ++) {
+        let point = xys[i]
+        let x = point[0]
+        let y =  point[1]
+        ctx.beginPath()
+        if(!gf || pe) {
+            ctx.strokeStyle = 'rgb(' + BACK.toString() + ')'
+        } else {
+            if(CO < 5) {
+                ctx.strokeStyle = 'rgb(' + FRONT.toString() + ')'
+            } else {
+                ctx.strokeStyle = 'rgb(' + cf.toString() + ')'
+            }
+        }
+        ctx.strokeRect(x * RS,y * RS, ONE * RS, ONE * RS)
+        ctx.stroke()
+    }
+}
+
+let nc, nvc, gf, DF, render, coloroptions, cf
+let sc = 1, sl, dp = [], pp = new Array(), pn = 4, ps = false, pe = false, pf = false
+let ccs = [], ci = 0, co = 1, fcs = []
+let count_pu = 0
+let ai, ctx
+
+function preload() {
+  let colorLength = color.length
+  coloroptions = {
+    1 : {
+      BACK : [0,0,0],
+      FRONT : color[(INDEX % colorLength)]
+    },
+    2 : {
+      BACK : [255, 255, 255],
+      FRONT : color[(INDEX % colorLength)]
+    },
+    3 : {
+      BACK : color[(INDEX % colorLength)],
+      FRONT : [0, 0, 0]
+    },
+    4 : {
+      BACK : color[(INDEX % colorLength)],
+      FRONT : [255, 255, 255]
+    },
+    5 : {
+      BACK : [255, 255, 255],
+      FRONT : [
+        color[(INDEX % colorLength)],
+        color[((INDEX + 21) % colorLength)]
+      ]
+    },
+    6 : {
+      BACK : [0, 0, 0],
+      FRONT : [
+        color[(INDEX % colorLength)],
+        color[((INDEX + 21) % colorLength)]
+      ]
+    },
+    7 : {
+      BACK : [255, 255, 255],
+      FRONT : [
+        color[(INDEX % colorLength)],
+        color[((INDEX + 14) % colorLength)],
+        color[((INDEX + 28) % colorLength)]
+      ]
+    },
+    8 : {
+      BACK : [0, 0, 0],
+      FRONT : [
+        color[(INDEX % colorLength)],
+        color[((INDEX + 14) % colorLength)],
+        color[((INDEX + 28) % colorLength)]
+      ]
+    },
+    9 : {
+      BACK : [0, 0, 0],
+      FRONT : color[(INDEX % colorLength)]
+    }
+  }
+  FRONT = coloroptions[CO].FRONT
+  BACK  = coloroptions[CO].BACK
+
+  make_full_color_stack()
+  make_color_store()
+}
+
+function make_full_color_stack() {
+  for(let i = 0; i <256; i ++) {
+    fcs.push([255, 0, i])
+  }
+  for(let i = 255; i >= 0; i --) {
+    fcs.push([i, 0, 255])
+  }
+  for(let i = 0; i <256; i ++) {
+    fcs.push([0, i, 255])
+  }
+  for(let i = 255; i >= 0; i --) {
+    fcs.push([0, 255, i])
+  }
+  for(let i = 0; i <256; i ++) {
+    fcs.push([i, 255, 0])
+  }
+  for(let i = 255; i >=0; i --) {
+    fcs.push([255, i, 0])
+  }
+}
+
+function make_color_store() {
+  if(CO < 5)
+    return
+
+  if(CO == 5 || CO == 6) {
+    let first = FRONT[0]
+    let last  = FRONT[1]
+
+    if(first[0] > last[0]) {
+      for(let i = first[0]; i >= last[0]; i --) {
+        ccs.push([i, first[1], first[2]])
+      } 
+    } else {
+      for(let i = first[0]; i <= last[0]; i ++) {
+        ccs.push([i, first[1], first[2]])
+      }
+    }
+
+    if(first[1] > last[1]) {
+      for(let i = first[1]; i >= last[1]; i --) {
+        ccs.push([last[0], i, first[2]])
+      } 
+    } else {
+      for(let i = first[1]; i <= last[1]; i ++) {
+        ccs.push([last[0], i, first[2]])
+      }
+    }
+
+    if(first[2] > last[2]) {
+      for(let i = first[2]; i >= last[2]; i --) {
+        ccs.push([last[0], last[1], i])
+      } 
+    } else {
+      for(let i = first[2]; i <= last[2]; i ++) {
+        ccs.push([last[0], last[1], i])
+      }
+    }
+  }
+  else if(CO == 7 || CO == 8) {
+    let first = FRONT[0]
+    let second = FRONT[1]
+    let last  = FRONT[2]
+
+    if(first[0] > second[0]) {
+      for(let i = first[0]; i >= second[0]; i --) {
+        ccs.push([i, first[1], first[2]])
+      } 
+    } else {
+      for(let i = first[0]; i <= second[0]; i ++) {
+        ccs.push([i, first[1], first[2]])
+      }
+    }
+
+    if(first[1] > second[1]) {
+      for(let i = first[1]; i >= second[1]; i --) {
+        ccs.push([second[0], i, first[2]])
+      } 
+    } else {
+      for(let i = first[1]; i <= second[1]; i ++) {
+        ccs.push([second[0], i, first[2]])
+      }
+    }
+
+    if(first[2] > second[2]) {
+      for(let i = first[2]; i >= second[2]; i --) {
+        ccs.push([second[0], second[1], i])
+      } 
+    } else {
+      for(let i = first[2]; i <= second[2]; i ++) {
+        ccs.push([second[0], second[1], i])
+      }
+    }
+    
+    if(second[0] > last[0]) {
+      for(let i = second[0]; i >= last[0]; i --) {
+        ccs.push([i, second[1], second[2]])
+      } 
+    } else {
+      for(let i = second[0]; i <= last[0]; i ++) {
+        ccs.push([i, second[1], second[2]])
+      }
+    }
+
+    if(second[1] > last[1]) {
+      for(let i = second[1]; i >= last[1]; i --) {
+        ccs.push([last[0], i, second[2]])
+      } 
+    } else {
+      for(let i = second[1]; i <= last[1]; i ++) {
+        ccs.push([last[0], i, second[2]])
+      }
+    }
+
+    if(second[2] > last[2]) {
+      for(let i = second[2]; i >= last[2]; i --) {
+        ccs.push([last[0], last[1], i])
+      } 
+    } else {
+      for(let i = second[2]; i <= last[2]; i ++) {
+        ccs.push([last[0], last[1], i])
+      }
+    }
+  } else {
+    let stackLength = fcs.length
+    for(let i = 0; i < stackLength; i ++) {
+      if(fcs[i].join(',') === FRONT.join(',')) {
+        ci = i
+        break
+      }
+    }
+  }
+}
+
+function init_current_size() {
+  sc = 1
+  if(RYTHM > 2) {
+    CS = RS
+    step_unit   = parseInt(RS / (RYTHM - 1))
+    sl = parseInt(RS / (RYTHM - 1))
+  } else {
+    sl = step_unit = CS = RS
+  }
+}
+
+function setup() {
+    let canvas = document.getElementById('canvas')
+    canvas.width = SIZE
+    canvas.height = SIZE
+    ctx = canvas.getContext('2d')
+  init_current_size()
+  gf = true
+  if(CO < 9)
+    ci  = 0
+
+  Math.seedrandom(INDEX + 1)
+  if(CO > 4 && CO < 9) {
+    cf = FRONT[0]
+  } else {
+    cf = FRONT
+  }
+  DF = new DifferentialLine(NMAX, FARL * 2, NEARL, FARL)
+
+  let angles = []
+  for(let i = 0; i < INIT_NUM ; i ++ ) {
+    angles.push(Math.random() * TWOPI)
+  }
+  DF._x(MID, MID, INIT_RAD, angles)
+  _h()
+  draw()
+}
+function draw() {
+  if(!ps) {
+    if(CO < 5) {
+      cf = FRONT
+    } else if(CO < 9 && CO > 4) {
+      cf = ccs[ci]
+      if(ci >= ccs.length - 1) {
+        co = 2
+      } 
+      if(ci <= 0) {
+        co = 1
+      }
+
+      if(co == 1) {
+        ci ++
+      } else {
+        ci --
+      }
+    } else {
+      cf = fcs[ci]
+      if(ci >= fcs.length - 1) {
+        co = 2
+      } 
+      if(ci <= 0) {
+        co = 1
+      }
+
+      if(co == 1) {
+        ci ++
+      } else {
+        ci --
+      }
+    }
+  }
+  wrap(render)
+
+  if(SIZE < 800) {
+    setTimeout(function () {
+        ai = requestAnimationFrame(draw)
+    }, 1000/10 + parseInt((SIZE - 400) / 10))
+  } else {
+      ai = requestAnimationFrame(draw)
+  }
+}
+
+function wrap (render) {
+  init_coordinates()
+  let res     = steps(DF)
+  let vert_num = DF._u(nvc)
+  let real = nvc.slice(0, vert_num)
+  
+  if(ps) {
+    real = pp.shift() 
+    if(pp.length >= pn * sc) {
+      pe = true
+      pf = false
+    } else {
+      pe = false
+      pf = true
+    }
+  } else {
+    if(gf) {
+      dp.push(real)
+    } else {
+      real = dp.pop()
+    }
+    if(real == undefined) {
+      setup()
+      return
+    }
+  }
+
+  _k(real)
+  return res
+}
+
+function init_coordinates() {
+  nc       = []
+  nvc  = []
+  for(let i = 0; i < NMAX; i ++) {
+    nc[i] = [0,0,0,0]
+  }
+  for(let i = 0; i < NMAX; i ++) {
+    nvc[i] = [0,0,0,0]
+  }
+}
+
+function steps(df) {
+  if(ps) {
+    if(pp.length == 0) {
+      ps = false
+      if(sc < RYTHM - 1) {
+        sc ++
+      } else {
+        sc = 1
+      }
+      sl = step_unit * sc
+    }
+  } else {
+    if(gf && !ps) {
+      df._a(STP)
+      _c(df, NEARL, 0.5)
+    }
+    if(check_step(sl, df)) {
+      if(sc < RYTHM - 1) {
+        ps = true
+        let drawLength = dp.length
+        for(let i = 1; i <= pn * sc; i ++ ) {
+          pp.push(dp[drawLength - i])
+        }
+        for(let i = pn * sc; i > 0; i -- ) {
+          pp.push(dp[drawLength - i])
+        }
+      } else {
+        if(RYTHM == 1) {
+            cancelAnimationFrame(ai)
+        }
+
+        if(gf) {
+            cancelAnimationFrame(ai)
+          sleep(parseInt(RYTHM + 1) * 1000)
+
+            if(SIZE < 800) {
+            setTimeout(function () {
+                ai = requestAnimationFrame(draw)
+            }, 1000/10 + parseInt((SIZE - 400) / 10))
+            } else {
+                ai = requestAnimationFrame(draw)
+            }
+        }
+        gf = false
+      }
+    }
+  }
+}
+
+function check_step(step, df) {
+  CS = step
+  let result = df._aa(3 * STP) < 0
+  CS = RS
+  return result
+}
+
+function sleep(milliseconds) {
+  const date = Date.now();
+  let currentDate = null;
+  do {
+    currentDate = Date.now();
+  } while (currentDate - date < milliseconds);
+}
+  
+preload()
+setup()
+</script>
