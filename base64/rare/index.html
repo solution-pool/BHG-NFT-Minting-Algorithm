@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coral Exo 1</title>
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+    
+</head>
+
+<body>
+    <canvas id="canvas">
+        <script>
+            !function(a, b, c, d, e, f, g, h, i) {
+                function j(a) {
+                    var b, c = a.length, e = this, f = 0, g = e.i = e.j = 0, h = e.S = [];
+                    for (c || (a = [c++]); d > f; )
+                        h[f] = f++;
+                    for (f = 0; d > f; f++)
+                        h[f] = h[g = s & g + a[f % c] + (b = h[f])],
+                        h[g] = b;
+                    (e.g = function(a) {
+                        for (var b, c = 0, f = e.i, g = e.j, h = e.S; a--; )
+                            b = h[f = s & f + 1],
+                            c = c * d + h[s & (h[f] = h[g = s & g + b]) + (h[g] = b)];
+                        return e.i = f,
+                        e.j = g,
+                        c
+                    }
+                    )(d)
+                }
+                function k(a, b) {
+                    var c, d = [], e = typeof a;
+                    if (b && "object" == e)
+                        for (c in a)
+                            try {
+                                d.push(k(a[c], b - 1))
+                            } catch (f) {}
+                    return d.length ? d : "string" == e ? a : a + "\0"
+                }
+                function l(a, b) {
+                    for (var c, d = a + "", e = 0; e < d.length; )
+                        b[s & e] = s & (c ^= 19 * b[s & e]) + d.charCodeAt(e++);
+                    return n(b)
+                }
+                function m(c) {
+                    try {
+                        return o ? n(o.randomBytes(d)) : (a.crypto.getRandomValues(c = new Uint8Array(d)),
+                        n(c))
+                    } catch (e) {
+                        return [+new Date, a, (c = a.navigator) && c.plugins, a.screen, n(b)]
+                    }
+                }
+                function n(a) {
+                    return String.fromCharCode.apply(0, a)
+                }
+                var o, p = c.pow(d, e), q = c.pow(2, f), r = 2 * q, s = d - 1, t = c["seed" + i] = function(a, f, g) {
+                    var h = [];
+                    f = 1 == f ? {
+                        entropy: !0
+                    } : f || {};
+                    var o = l(k(f.entropy ? [a, n(b)] : null == a ? m() : a, 3), h)
+                    , s = new j(h);
+                    return l(n(s.S), b),
+                    (f.pass || g || function(a, b, d) {
+                        return d ? (c[i] = a,
+                        b) : a
+                    }
+                    )(function() {
+                        for (var a = s.g(e), b = p, c = 0; q > a; )
+                            a = (a + c) * d,
+                            b *= d,
+                            c = s.g(1);
+                        for (; a >= r; )
+                            a /= 2,
+                            b /= 2,
+                            c >>>= 1;
+                        return (a + c) / b
+                    }, o, "global"in f ? f.global : this == c)
+                }
+                ;
+                if (l(c[i](), b),
+                g && g.exports) {
+                    g.exports = t;
+                    try {
+                        o = require("crypto")
+                    } catch (u) {}
+                } else
+                    h && h.amd && h(function() {
+                        return t
+                    })
+            }(this, [], Math, 256, 6, 52, "object" == typeof module && module, "function" == typeof define && define, "random");
+            function long_array_init(a, n, v) {
+                for(let i = 0; i < n; i ++) {
+                    a[i] = v
+                }
+
+                return a
+            }
+
+            function add_e_to_ve(v, e, ve) {
+                if(ve[2*v] < 0) {
+                    ve[2*v] = e
+                } else {
+                    ve[2*v + 1] = e
+                }
+            }
+
+            function del_e_from_ve(v, e, ve) {
+                if(ve[2*v] == e ) {
+                    ve[2*v] = ve[2*v + 1]
+                    ve[2*v + 1] = -1
+                } else if(ve[2*v + 1] == e) {
+                    ve[2*v + 1] = -1
+                }
+
+                return ve
+            }
+
+            function spawn (df, d, limit) {
+                const edgeNumber  = df.get_enum()
+                let rnd = []
+                let rndmask = []
+                for(let i = 0; i < edgeNumber ; i ++) {
+                    rnd.push(Math.random())
+                }
+
+                const rndLength = rnd.length
+                for(i = 0; i < rndLength ; i ++) {
+                    if(rnd[i] > limit || !rnd[i]) {
+                        continue
+                    }
+
+                    rndmask.push(i)
+                }
+                let rndmaskLength = rndmask.length
+                
+                for(let i = 0 ; i < rndmaskLength; i ++) {
+                    let l = df.get_edge_length(rndmask[i])
+
+                    if(l < d) {
+                        continue
+                    }
+
+                    try {
+                        df.split_edge(rndmask[i])
+                    } 
+                    catch(e) {
+                        continue
+                    }
+                }
+            }
+
+            function spawn_curl(df, limit, prob_spawn=1.0) {
+                let edgeNumber = df.get_enum()
+                let ind_curv = []
+                let tot_curv = []
+                let max_curv = -100000
+
+                for(let e = 0; e < edgeNumber; e ++) {
+                    try {
+                        let t = df.get_edge_curvature(e)
+                        ind_curv[e] = t
+                        tot_curv += t
+                        max_curv = Math.max(max_curv, t)
+                    } catch (e) {
+                    }
+                }
+                let ne = ind_curv.length
+
+                for(let i = 0; i < ne; i ++) {
+                    let r = Math.random()
+                    let e = i
+                    let t = ind_curv[e]
+
+                    if(r < t / max_curv * prob_spawn) {
+                        try {
+                            df.split_edge(e, minimum_length = limit)
+                        } catch (e) {
+                            
+                        }
+                    }
+                }
+            }
+
+            class Segments {
+
+            constructor(nmax, zonewidth) {
+                this.X = new Array()
+                long_array_init(this.X, nmax, 0)
+                this.Y = new Array()
+                long_array_init(this.Y, nmax, 0)
+                this.VA =  new Array()
+                long_array_init(this.VA, nmax, 0)
+                this.VS = new Array()
+                long_array_init(this.VS, nmax, -1)
+                this.EV = new Array()
+                long_array_init(this.EV, 2*nmax, -1)
+                this.VE = new Array()
+                long_array_init(this.VE, 2* nmax, -1)
+
+                this.nmax = nmax
+
+                this.vnum = 0
+
+                this.vact = 0
+
+                this.edgeNumber = 0
+
+                this.snum = 0
+
+                this.zonewidth = zonewidth
+
+                this.nz = 1.0 /zonewidth
+
+                if (this.nz<3) {
+                    this.nz = 1
+                    this.zonewidth = 1.0
+                }
+
+                this.zonemap = new Zonemap(this.nz)
+                this.zonemap.__assign_xy_arrays(this.X, this.Y)
+            }
+            __valid_new_vertex(x,  y) {
+
+                if (x<0 || x>1) {
+                    return -1
+                }
+
+                if (y<0 || y>1) {
+                    return -1
+                }
+
+                return 1
+            }
+            __add_vertex(x, y, s) {
+                if (this.__valid_new_vertex(x,y)<0) {
+                    throw new Error("Vertext outside unit square.")
+                }
+
+                const vnum = this.vnum
+                
+                this.X[vnum] = x
+                this.Y[vnum] = y
+                this.VA[vnum] = 1
+                this.VS[vnum] = s
+
+                this.zonemap.__add_vertex(vnum)
+
+                this.vnum = vnum + 1
+                return vnum
+            }
+
+            __add_passive_vertex(x, y,  s) {
+
+                if (this.__valid_new_vertex(x,y)<0) {
+                    throw new Error("Vertext outside unit square.")
+                }
+
+                let vnum = this.vnum
+
+                this.X[vnum] = x
+                this.Y[vnum] = y
+                this.VA[vnum] = 0
+                this.VS[vnum] = s
+
+                this.zonemap.__add_vertex(vnum)
+
+                this.vnum += 1
+                return vnum
+            }
+
+            __valid_new_edge(v1,  v2) {
+                if (v1<0 || v1>this.vnum-1 || this.VA[v1]<0) {
+                return -1
+                }
+
+                if (v2<0 || v2>this.vnum-1 || this.VA[v2]<0) {
+                return -1
+                }
+
+                return 1
+            }
+
+            __add_edge(v1,  v2) {
+                v1 = parseInt(v1)
+                v2 = parseInt(v2)
+                const edgeNumber = this.edgeNumber
+                if (this.__valid_new_edge(v1,v2)<0) {
+                    throw new Error("invalid vertex in __add_edge v1, v2, " + v1 + ',' + v2)
+                }
+
+                this.EV[2*edgeNumber] = v1
+                this.EV[2*edgeNumber+1] = v2
+
+                add_e_to_ve(v1, edgeNumber, this.VE)
+                add_e_to_ve(v2, edgeNumber, this.VE)
+
+                this.edgeNumber += 1
+                return edgeNumber
+            }
+
+            __edge_exists(e1) {
+
+                if (this.EV[2*e1]>-1 && this.EV[2*e1+1]>-1) {
+                    return 1
+                }
+                else {
+                    return -1
+                }
+            }
+
+            __del_vertex(v1) {
+
+                this.VA[v1] = -1
+
+                this.zonemap.__del_vertex(v1)
+
+                return 1
+            }
+
+            __set_passive_vertex(v1) {
+
+                this.VA[v1] = 0
+
+                return 1
+            }
+
+            __del_edge(e1) {
+
+                if (e1<0 || e1>this.edgeNumber-1) {
+                    throw new Error("invalid edge in __del_edge e1" + e1)
+                }
+
+                let v1 = this.EV[2*e1]
+                let v2 = this.EV[2*e1+1]
+
+                this.EV[2*e1] = -1
+                this.EV[2*e1+1] = -1
+
+                if (v1>-1) {
+                del_e_from_ve(v1, e1, this.VE)
+                }
+                if (v2>-1) {
+                del_e_from_ve(v2, e1, this.VE)
+                }
+
+                return 1
+            }   
+
+            __safe_vertex_positions(limit) {
+                let vnum = this.vnum
+                for (let i = 0 ; i < vnum ; i ++) {
+                    if( this.X[i] < ((REALSIZE - CURRENTSIZE) / 2 / REALSIZE + limit) || this.X[i] > (1 - (REALSIZE - CURRENTSIZE) / 2 / REALSIZE - limit) ) {
+                    return - 1
+                    }
+                    if(this.Y[i] < ((REALSIZE - CURRENTSIZE) / 2 / REALSIZE + limit) || this.Y[i] > (1 - (REALSIZE - CURRENTSIZE) / 2 / REALSIZE - limit)) {
+                        return -1
+                    }
+                }
+                return 1
+            }   
+
+            get_edges_coordinates() {
+
+                let res = []
+                let edgeNumber = this.edgeNumber
+
+                for (e = 0 ; e < edgeNumber; e ++ ) {
+
+                    if (this.EV[2*e]>-1) {
+
+                        v1 = this.EV[2*e]
+                        v2 = this.EV[2*e+1]
+                        res.push([this.X[v1], this.Y[v1],
+                                    this.X[v2], this.Y[v2]])
+                    }
+                }
+                return res
+            }
+
+            np_get_edges_coordinates(a) {
+
+                let edgeNumber = this.edgeNumber
+                let n = 0
+
+                for (let e = 0; e < edgeNumber; e ++ ) {
+
+                    if (this.EV[2*e]>-1) {
+
+                        let v1 = this.EV[2*e]
+                        let v2 = this.EV[2*e+1]
+                        a[n][0] = this.X[v1]
+                        a[n][1] = this.Y[v1]
+                        a[n][2] = this.X[v2]
+                        a[n][3] = this.Y[v2]
+
+                        n+=1
+                    }
+                }
+
+                return n
+            }
+
+            np_get_edges(a) {
+                n = 0
+
+                for(e = 0; e < count(this.edgeNumber); e ++ ) {
+                    
+
+                if (this.EV[2*e]>-1) {
+
+                    a[n,0] = this.EV[2*e]
+                    a[n,1] = this.EV[2*e+1]
+
+                    n+=1
+                }
+                }
+                return n
+            }
+
+            np_get_vert_coordinates(a) {
+
+                let vnum = this.vnum
+                let n = 0
+
+                for (let v = 0; v < vnum; v ++) {
+
+                    if (this.VA[v]>-1) {
+
+                        a[n][0] = this.X[v]
+                        a[n][1] = this.Y[v]
+                        n+=1
+                    }
+                }
+
+                return n
+            }
+
+            get_edge_length(e1) {
+
+            let nx = this.X[this.EV[2*e1]] - this.X[this.EV[2*e1+1]]
+            let ny = this.Y[this.EV[2*e1]] - this.Y[this.EV[2*e1+1]]
+            let length = Math.sqrt(nx*nx+ny*ny)
+
+            return length
+            }
+
+            init_line_segment(xys, lock_edges=1) {
+
+            let vertices = []
+            let snum = this.snum
+            let xx, yy
+
+            if (lock_edges>0) {
+
+                xx = xys[0][0]
+                yy =  xys[0][1]
+
+                vertices.push(this.__add_passive_vertex(xx,yy,snum))
+
+                for(let i = 1; i < xys.length - 1 ; i ++) {
+                xx = xys[i][0]
+                yy = xys[i][1]
+                vertices.push(this.__add_vertex(xx, yy, snum))
+                }
+
+                xx = xys[xys.length - 1][0]
+                yy = xys[xys.length - 1][1]
+                vertices.push(this.__add_passive_vertex(xx,yy,snum))
+            }
+
+            else {
+                for (let i = 0 ; i < xys.length; i ++ ) {
+                xx = xys[i][0]
+                yy = xys[i][1]
+                vertices.push(this.__add_vertex(xx,yy,snum))
+                }
+            }
+
+            for (let i = 0; i < vertices.length - 1; i ++) {
+                this.__add_edge(vertices[i],vertices[i+1])
+            }
+
+            this.snum = snum+1
+            }
+
+            init_circle_segment(x, y, r, angles) {
+            
+            let vertices = []
+            let snum = this.snum
+
+            let num_angles = angles.length
+
+            for (let i = 0; i < num_angles; i ++) {
+                const the = angles[i]
+
+                const xx = x + Math.cos(the)*r
+                const yy = y + Math.sin(the)*r
+
+                vertices.push(this.__add_vertex(xx,yy,snum))
+            }
+
+            for (let i = 0; i < vertices.length-1; i ++) {
+                this.__add_edge(vertices[i],vertices[i+1])
+            }
+
+            this.__add_edge(vertices[0],vertices[num_angles-1])
+            this.snum = snum+1
+            }
+
+            split_edge(e1, minimum_length=-1.) {
+            if (this.__edge_exists(e1)<0) {
+                throw new Error("e1 does not exist")
+            }
+            if (e1<0) {
+                throw new Error("invalid edge in split_edge e1" + e1)
+            }
+
+            let v1 = this.EV[2*e1]
+            let v2 = this.EV[2*e1+1]
+
+            let s = this.VS[v1]
+
+            if (s<0) {
+                throw new Error("Invalid segment id.")
+            }
+
+            if (minimum_length>0) {
+                let dx = this.X[v1] - this.X[v2]
+                let dy = this.Y[v1] - this.Y[v2]
+
+                if (dx*dx+dy*dy<minimum_length*minimum_length) {
+                throw new Error("edge too short, e1," + e1)
+                }
+            }
+
+            let midx = (this.X[v1] + this.X[v2])*0.5
+            let midy = (this.Y[v1] + this.Y[v2])*0.5
+
+            let v3 = this.__add_vertex(midx,midy,s)
+            this.__del_edge(e1)
+
+            this.__add_edge(v1,v3)
+            this.__add_edge(v2,v3)
+
+            return 1
+            }
+
+            get_edge_curvature(e1) {
+
+            if (this.__edge_exists(e1)<0) {
+                throw new Error("e1 does not exist")
+            }
+
+            if (e1<0) {
+                throw new Error("invalid edge in split_edge e1" + e1)
+            }
+
+            let va = this.EV[2*e1]
+            let vb = this.EV[2*e1+1]
+            let e2, e3
+
+            if (va<0 || vb<0) {
+                throw new Error("non-vertex")
+            }
+            if (this.VE[2*va] == this.VE[2*vb]) {
+                e2 = this.VE[2*va+1]
+                e3 = this.VE[2*vb+1]
+            }
+            else if (this.VE[2*va] == this.VE[2*vb+1]) {
+                e2 = this.VE[2*va+1]
+                e3 = this.VE[2*vb]
+            }
+            else if (this.VE[2*va+1] == this.VE[2*vb]) {
+                e2 = this.VE[2*va]
+                e3 = this.VE[2*vb+1]
+            }
+            else if (this.VE[2*va+1] == this.VE[2*vb+1]) {
+                e2 = this.VE[2*va]
+                e3 = this.VE[2*vb]
+            }
+            else {
+                throw new Error('edges not connected')
+            }
+
+            let v3 = this.EV[2*e1]
+            let v4 = this.EV[2*e1+1]
+            let v1, v2, ax, bx, ay, by
+            let t = 0.0
+            
+            if (e2>-1) {
+                v1 = this.EV[2*e2]
+                v2 = this.EV[2*e2+1]
+
+                ax = this.X[v1] - this.X[v2]
+                bx = this.X[v3] - this.X[v4]
+                ay = this.Y[v1] - this.Y[v2]
+                by = this.Y[v3] - this.Y[v4]
+
+                t += Math.abs(ax*by - ay*bx)*0.5
+            }
+            if (e3>-1) {
+                v1 = this.EV[2*e3]
+                v2 = this.EV[2*e3+1]
+
+                ax = this.X[v1] - this.X[v2]
+                bx = this.X[v3] - this.X[v4]
+                ay = this.Y[v1] - this.Y[v2]
+                by = this.Y[v3] - this.Y[v4]
+
+                t += Math.abs(ax*by - ay*bx)*0.5
+            }
+            
+            if (t<=0) {
+                throw new Error("no curvature.")
+            }
+
+            return t
+            }
+
+            safe_vertex_positions(limit) {
+                return this.__safe_vertex_positions(limit)
+            }
+
+            get_enum() {
+
+                return this.edgeNumber
+            }
+            }
+            class DifferentialLine extends Segments {
+
+            constructor(nmax, zonewidth, nearl, farl) {
+                super(nmax, zonewidth)
+
+                this.SX = new Array()
+                this.SY = new Array()
+                this.SD = new Array()
+
+                this.nearl = nearl
+                this.farl = farl
+            }
+
+            optimize_position(step) {
+                let vertices = new Array()
+                const vnumCount = this.vnum
+                for(let v = 0; v < vnumCount; v ++ ) {
+                    this.SX[v] = 0.0
+                    this.SY[v] = 0.0
+
+                    let num = this.zonemap.__sphere_vertices(
+                        this.X[v],
+                        this.Y[v],
+                        this.farl,
+                        vertices
+                    )
+                    this.__reject(
+                        v, 
+                        vertices,
+                        num, 
+                        step,
+                        this.SX,
+                        this.SY
+                    )
+
+                }
+                for (let v = 0; v < vnumCount ; v ++) {
+                    if(this.VA[v] < 0) {
+                        continue
+                    }
+
+                    this.X[v] = this.X[v] + this.SX[v]
+                    this.Y[v] = this.Y[v] + this.SY[v]
+                }
+
+                for(let v = 0; v < vnumCount; v ++) {
+                    if(this.VA[v] < 0) {
+                        continue
+                    }
+                    try {
+                        this.zonemap.__update_v(v)
+                    }
+                    catch {
+                    }
+                }
+            }
+
+            __reject(v, vertices, num, step, sx, sy) {
+                if(this.VA[v] < 1) {
+                    return -1
+                }
+
+                let e1 = this.VE[2*v]
+                let e2 = this.VE[2*v + 1]
+                let v1, v2
+                // connected vertices to v, v1 and v2
+                if(this.EV[2*e1] == v) {
+                    v1 = this.EV[2*e1 + 1]
+                } else {
+                    v1 = this.EV[2*e1]
+                }
+
+                if(this.EV[2*e2] == v) {
+                    v2 = this.EV[2*e2 + 1]
+                } else {
+                    v2 =  this.EV[2*e2]
+                }
+
+                let resx = 0
+                let resy = 0
+
+                for(let k = 0; k < num; k ++) {
+                    let neigh =  vertices[k]
+                    let dx = this.X[v] - this.X[neigh]
+                    let dy =  this.Y[v] -  this.Y[neigh]
+
+                    let nrm = Math.sqrt(dx * dx + dy * dy)
+
+                    if(neigh == v1 || neigh == v2) {
+                        if(nrm < this.nearl || nrm <= 0) {
+                            continue
+                        }
+
+                        resx += -dx/nrm *step
+                        resy += -dy/nrm * step
+                    } else {
+                        if(nrm > this.farl || nrm <= 0) {
+                            continue
+                        }
+                        resx += dx * (this.farl/nrm -1) *step
+                        resy += dy * (this.farl/nrm-1)*step
+                    }
+                }
+                sx[v] += resx
+                sy[v] += resy
+
+                return 1
+
+            }
+            }
+            let render_container
+            const color = [
+                [255, 0 , 0],
+                [255, 0 , 36],
+                [255, 0 , 72],
+                [255, 0 , 108],
+                [255, 0 , 144],
+                [255, 0 , 180],
+                [255, 0 , 216],
+                [255, 0 , 255],
+                [216, 0 , 255],
+                [180, 0 , 255],
+                [144, 0 , 255],
+                [108, 0 , 255],
+                [72, 0 , 255],
+                [36, 0 , 255],
+                [0, 0 , 255],
+                [0, 36 , 255],
+                [0, 72 , 255],
+                [0, 108 , 255],
+                [0, 144 , 255],
+                [0, 180 , 255],
+                [0, 216 , 255],
+                [0, 255 , 255],
+                [0, 255 , 216],
+                [0, 255 , 180],
+                [0, 255 , 144],
+                [0, 255 , 108],
+                [0, 255 , 72],
+                [0, 255 , 36],
+                [0, 255 , 0],
+                [36, 255 , 0],
+                [72, 255 , 0],
+                [108, 255 , 0],
+                [144, 255 , 0],
+                [180, 255 , 0],
+                [216, 255 , 0],
+                [255, 255 , 0],
+                [255, 216 , 0],
+                [255, 180 , 0],
+                [255, 144 , 0],
+                [255, 108 , 0],
+                [255, 72 , 0],
+                [255, 36 , 0],
+            ]
+            class Render {
+                constructor(n, back, front) {
+                    this.n      = n
+                    this.front  = front
+                    this.back   = back
+                    this.pix    = 1 / n
+                    
+                    this.colors = []
+                    this.ncolors = 0, 
+                    this.num_img = 0
+                    render_container = this
+                    this.clear_canvas()
+                }
+                clear_canvas() {
+                    ctx.fillStyle = 'rgb(' + this.back.toString() + ')'
+                    ctx.fillRect(0,0,SIZE,SIZE)
+                }
+
+                circles(x1, y1, x2, y2, r, nmin = 2, fill=false) {
+                    let dx = x1 - x2
+                    let dy = y1 - y2
+
+                    let dd = Math.sqrt(dx ** 2 + dy ** 2)
+                    let n = parseInt(dd / render_container.pix) 
+                    if(n < nmin) {
+                        n = nmin
+                    }
+                    let a = Math.atan2(dy, dx)
+                    let scale = render_container.linspace(0, dd, n)
+                    for(let i = 0; i < scale.length; i ++ ) {
+                        let xp = x1 - scale[i] * Math.cos(a)
+                        let yp = y1 - scale[i] * Math.sin(a)
+                        ctx.beginPath()
+                        if(fill) {
+                            if(!growth_flag || pulse_erase) {
+                                ctx.strokeStyle = 'rgb(' + this.back.toString() + ')'
+                            } else {
+                                if(COLOROPTION < 5) {
+                                    ctx.strokeStyle = 'rgb(' + this.front.toString() + ')'
+                                } else {
+                                    ctx.strokeStyle = 'rgb(' + current_front.toString() + ')'
+                                }
+                            }
+                        } else {
+                            if(COLOROPTION < 5) {
+                                ctx.strokeStyle = 'rgb(' + this.front.toString() + ')'
+                            } else {
+                                ctx.strokeStyle = 'rgb(' + current_front.toString() + ')'
+                            }
+                        }
+                        ctx.arc(xp * REALSIZE, yp * REALSIZE, r * REALSIZE, 0, TWOPI)
+                        ctx.stroke()
+                    }
+                }
+
+                linspace(start, stop, num, endpoint = true) {
+                    const div = endpoint ? (num - 1) : num;
+                    const step = (stop - start) / div;
+                    return Array.from({length: num}, (_, i) => start + step * i);
+                }
+
+                dot(xys, width = 0) {
+                    let pix
+                    if(width) {
+                        pix = width
+                    } else {
+                        pix = this.pix
+                    }
+                    let xyLength = xys.length
+                    for(let i = 0; i < xyLength; i ++) {
+                        let point = xys[i]
+                        let x = point[0]
+                        let y =  point[1]
+                        if(!growth_flag || pulse_erase) {
+                            ctx.fillStyle = 'rgb(' + this.back.toString() + ')'
+                        } else {
+                            if(COLOROPTION < 5) {
+                                ctx.fillStyle = 'rgb(' + this.front.toString() + ')'
+                            } else {
+                                ctx.fillStyle = 'rgb' + current_front.toString() + ')'
+                            }
+                        }
+                        ctx.fillRect(x * REALSIZE,y * REALSIZE,pix * REALSIZE, pix * REALSIZE)
+                    }
+                }
+
+                sandstroke(xys, grains = 10) {
+                    let pix = this.pix
+                    const xyLength = xys.length
+                    
+                    for(let i = 0; i < xyLength ; i ++ ) {
+                        let point = xys[i]
+                        let dx = point[2] - point[0]
+                        let dy = point[3] - point[1]
+                        
+                        let aa = Math.atan2(dy, dx)
+                        let direct =  [Math.cos(aa), Math.sin(aa)]
+
+                        let dd = Math.sqrt(dx ** 2, dy ** 2)
+                        
+                        let random = Math.random() * dd
+                        let x = point[0] + direct[0] * random
+                        let y = point[1] + direct[1] * random
+                        
+                        if(!growth_flag || pulse_erase) {
+                            ctx.fillStyle = 'rgb(' + this.back.toString() + ')'
+                        } else {
+                            if(COLOROPTION < 5) {
+                                ctx.fillStyle = 'rgb(' + this.front.toString() + ')'
+                            } else {
+                                ctx.fillStyle = 'rgb(' + current_front.toString() + ')'
+                            }
+                        }
+                        ctx.fillRect(x * REALSIZE, y * REALSIZE, pix * REALSIZE, pix * REALSIZE);
+                    }
+                }
+            }
+
+            class Zonemap {
+
+            constructor(nz) {
+            nz = parseInt(nz)
+            const total_zones = nz ** 2
+            this.VZ                     = []
+            this.Z                      = []
+
+            this.vnum                   = 0
+            this.vsize                  = REALSIZE
+
+            this.nz                     = nz
+            this.total_zones            = nz*nz
+            this.greatest_zone_size     = REALSIZE
+            
+            this.__init_zones()
+            }
+            __init_zones() {
+            // somehow this did not work when executed inside cinit
+
+            for (let i = 0; i < this.total_zones ; i ++) {
+
+                let z = []
+
+                z.i = i
+                z.size = REALSIZE
+                z.count = 0
+                z.ZV = []
+
+                this.Z[i] = z
+            }
+            }
+            __assign_xy_arrays(X,Y) {
+
+            this.X = X
+            this.Y = Y
+
+            return
+            }
+            __add_vertex(v1) {
+            v1 = parseInt(v1)
+            let vnum = this.vnum
+
+            const x = this.X[v1]
+            const y = this.Y[v1]
+
+            const z1 = this.__get_z(x,y)
+
+            this.__add_v_to_zone(z1, vnum)
+            this.VZ[vnum] = z1
+
+            const new_vz = []
+            
+            if (this.vnum>=this.vsize-1) {
+                this.VZ = new_vz;
+                this.vsize = this.vsize*2
+            }
+
+            this.vnum += 1
+            return vnum
+            }
+            __del_vertex(v1) {
+
+            v1 = parseInt(v1)
+            this.__remove_v_from_zone(this.VZ[v1], v1)
+            this.VZ[v1] = -1
+
+            return 1
+            }
+            __add_v_to_zone(z1, v1) {
+            
+            z1 = parseInt(z1)
+            v1 = parseInt(v1)
+
+            let z = this.Z[z1]
+            if(z == undefined) {
+                z = []
+                z.count = 0
+                z.ZV = []
+                z.i = 0
+                z.size = SIZE
+
+                this.Z.push(z)
+            }
+            z.ZV[z.count] = v1
+            z.count += 1
+
+            if (z.count>=z.size-1) {
+                return this.__extend_zv_of_zone(z)
+            }
+
+            return 1
+            }
+            __extend_zv_of_zone(z) {
+
+            let new_size = z.size*2
+            const new_zv = []
+                z.ZV = new_zv;
+                z.size = new_size
+                if (new_size>this.greatest_zone_size) {
+                this.greatest_zone_size = new_size
+                }
+
+                this.Z.push(z)
+            return 1
+            }
+            __remove_v_from_zone(z1, v1) {
+            z1 = parseInt(z1)
+            v1 = parseInt(v1)
+
+            let z = this.Z[z1]
+            for (let i = 0; i < z.count ;  i ++) {
+
+                if (z.ZV[i] == v1) {
+                z.ZV[i] = z.ZV[z.count-1]
+                z.count -= 1
+                return 1
+                }
+            }
+
+            return -1
+            }
+            __get_z(x, y) {
+
+            const nz = this.nz
+
+            const i = parseInt(x*nz)
+            const j = parseInt(y*nz)
+            const z = nz*i + j
+
+            return z
+            }
+            __update_v(v1) {
+            v1 = parseInt(v1)
+            const x = this.X[v1]
+            const y = this.Y[v1]
+            const new_z = parseInt(this.__get_z(x, y))
+            const old_z = parseInt(this.VZ[v1])
+
+            if (old_z<0) {
+                return -1
+            }
+
+            if (new_z != old_z) {
+                this.__remove_v_from_zone(old_z, v1)
+                this.__add_v_to_zone(new_z, v1)
+                this.VZ[v1] = new_z
+
+                return 1
+            }
+
+            return -1
+            }
+            __sphere_vertices(x, y, rad, vertices) {
+
+            const nz = this.nz
+
+            const zx = parseInt(x*nz)
+            const zy = parseInt(y*nz)
+
+            let num = 0
+
+            const rad2 = rad*rad
+
+
+            for (let a = Math.max(zx-1,0); a < Math.min(zx+2,nz); a ++) {
+                for (let b = Math.max(zy-1,0); b < Math.min(zy+2,nz); b ++ ) {
+                
+                const z = this.Z[a*nz+b]
+
+                for (let i = 0; i < z.count; i ++) {
+
+                    const dx = x-this.X[z.ZV[i]]
+                    const dy = y-this.Y[z.ZV[i]]
+
+                    if (dx*dx+dy*dy<rad2) {
+
+                    vertices[num] = z.ZV[i]
+                    num += 1
+                    }
+                }
+                }
+            }
+            return num
+            }
+            add_vertex(v1) {
+            v1 = parseInt(v1)
+            return this.__add_vertex(v1)
+            }
+            del_vertex(v1) {
+            v1 = parseInt(v1)
+            return this.__del_vertex(v1)
+            }
+
+            update_v(v1) {
+            v1 = parseInt(v1)
+            return this.__update_v(v1)
+            }
+            }
+            // Those variables contain the trait of the coral.
+
+            const SIZE          = 400       // Growth size
+            const SPEED         = 1         // Growth speed
+            const LOCATION      = 1         // Location
+            const COLOROPTION   = 2         // Coloroption
+            const RYTHM         = 6         // Growth RYTHM
+
+            // Those are the config value that the algorithm uses. Do not modify this value or the coral will be changed unexpectedly.
+
+            const INDEX         = 1
+            const REALSIZE      = SIZE
+            const NMAX          = 10 ** 4
+            const ONE           = 1 / REALSIZE
+            const STP           = ONE
+            const NEARL         = 6 * ONE
+            const FARL          = 60 * ONE
+            const INIT_RAD      = 6 * ONE
+            const INIT_NUM      = 5
+            const MID           = 0.5
+            const TWOPI         = 2 * Math.PI
+            let FRONT, BACK, CURRENTSIZE
+
+            let np_coords, np_vert_coords, growth_flag, DF, render, coloroptions, current_front
+            let step_count = 1, step_length, draw_path = [], pulse_path = [], pulse_num = parseInt(SIZE / RYTHM), pulse_start = false, pulse_erase = false, pulse_fill = false
+            let currendColorStore = [], colorIndex = 0, colorOperation = 1, fullColorStack = []
+            let ctx
+
+            function preload() {
+            let colorLength = color.length
+            coloroptions = {
+                1 : {
+                BACK : [0,0,0],
+                FRONT : color[(INDEX % colorLength)]
+                },
+                2 : {
+                BACK : [255, 255, 255],
+                FRONT : color[(INDEX % colorLength)]
+                },
+                3 : {
+                BACK : color[(INDEX % colorLength)],
+                FRONT : [0, 0, 0]
+                },
+                4 : {
+                BACK : color[(INDEX % colorLength)],
+                FRONT : [255, 255, 255]
+                },
+                5 : {
+                BACK : [255, 255, 255],
+                FRONT : [
+                    color[(INDEX % colorLength)],
+                    color[((INDEX + 21) % colorLength)]
+                ]
+                },
+                6 : {
+                BACK : [0, 0, 0],
+                FRONT : [
+                    color[(INDEX % colorLength)],
+                    color[((INDEX + 21) % colorLength)]
+                ]
+                },
+                7 : {
+                BACK : [255, 255, 255],
+                FRONT : [
+                    color[(INDEX % colorLength)],
+                    color[((INDEX + 14) % colorLength)],
+                    color[((INDEX + 28) % colorLength)]
+                ]
+                },
+                8 : {
+                BACK : [0, 0, 0],
+                FRONT : [
+                    color[(INDEX % colorLength)],
+                    color[((INDEX + 14) % colorLength)],
+                    color[((INDEX + 28) % colorLength)]
+                ]
+                },
+                9 : {
+                BACK : [0, 0, 0],
+                FRONT : color[(INDEX % colorLength)]
+                }
+            }
+            FRONT = coloroptions[COLOROPTION].FRONT
+            BACK  = coloroptions[COLOROPTION].BACK
+
+            make_full_color_stack()
+            make_color_store()
+            }
+
+            function make_full_color_stack() {
+            for(let i = 0; i <256; i ++) {
+                fullColorStack.push([255, 0, i])
+            }
+            for(let i = 255; i >= 0; i --) {
+                fullColorStack.push([i, 0, 255])
+            }
+            for(let i = 0; i <256; i ++) {
+                fullColorStack.push([0, i, 255])
+            }
+            for(let i = 255; i >= 0; i --) {
+                fullColorStack.push([0, 255, i])
+            }
+            for(let i = 0; i <256; i ++) {
+                fullColorStack.push([i, 255, 0])
+            }
+            for(let i = 255; i >=0; i --) {
+                fullColorStack.push([255, i, 0])
+            }
+            }
+
+            function make_color_store() {
+            if(COLOROPTION < 5)
+                return
+            if(COLOROPTION == 5 || COLOROPTION == 6) {
+                let first = FRONT[0]
+                let last  = FRONT[1]
+
+                if(first[0] > last[0]) {
+                for(let i = first[0]; i >= last[0]; i --) {
+                    currendColorStore.push([i, first[1], first[2]])
+                } 
+                } else {
+                for(let i = first[0]; i <= last[0]; i ++) {
+                    currendColorStore.push([i, first[1], first[2]])
+                }
+                }
+
+                if(first[1] > last[1]) {
+                for(let i = first[1]; i >= last[1]; i --) {
+                    currendColorStore.push([last[0], i, first[2]])
+                } 
+                } else {
+                for(let i = first[1]; i <= last[1]; i ++) {
+                    currendColorStore.push([last[0], i, first[2]])
+                }
+                }
+
+                if(first[2] > last[2]) {
+                for(let i = first[2]; i >= last[2]; i --) {
+                    currendColorStore.push([last[0], last[1], i])
+                } 
+                } else {
+                for(let i = first[2]; i <= last[2]; i ++) {
+                    currendColorStore.push([last[0], last[1], i])
+                }
+                } 
+            }
+            else if(COLOROPTION == 7 || COLOROPTION == 8) {
+                let first = FRONT[0]
+                let second = FRONT[1]
+                let last  = FRONT[2]
+
+                if(first[0] > second[0]) {
+                for(let i = first[0]; i >= second[0]; i --) {
+                    currendColorStore.push([i, first[1], first[2]])
+                } 
+                } else {
+                for(let i = first[0]; i <= second[0]; i ++) {
+                    currendColorStore.push([i, first[1], first[2]])
+                }
+                }
+
+                if(first[1] > second[1]) {
+                for(let i = first[1]; i >= second[1]; i --) {
+                    currendColorStore.push([second[0], i, first[2]])
+                } 
+                } else {
+                for(let i = first[1]; i <= second[1]; i ++) {
+                    currendColorStore.push([second[0], i, first[2]])
+                }
+                }
+
+                if(first[2] > second[2]) {
+                for(let i = first[2]; i >= second[2]; i --) {
+                    currendColorStore.push([second[0], second[1], i])
+                } 
+                } else {
+                for(let i = first[2]; i <= second[2]; i ++) {
+                    currendColorStore.push([second[0], second[1], i])
+                }
+                }
+                
+                if(second[0] > last[0]) {
+                for(let i = second[0]; i >= last[0]; i --) {
+                    currendColorStore.push([i, second[1], second[2]])
+                } 
+                } else {
+                for(let i = second[0]; i <= last[0]; i ++) {
+                    currendColorStore.push([i, second[1], second[2]])
+                }
+                }
+
+                if(second[1] > last[1]) {
+                for(let i = second[1]; i >= last[1]; i --) {
+                    currendColorStore.push([last[0], i, second[2]])
+                } 
+                } else {
+                for(let i = second[1]; i <= last[1]; i ++) {
+                    currendColorStore.push([last[0], i, second[2]])
+                }
+                }
+
+                if(second[2] > last[2]) {
+                for(let i = second[2]; i >= last[2]; i --) {
+                    currendColorStore.push([last[0], last[1], i])
+                } 
+                } else {
+                for(let i = second[2]; i <= last[2]; i ++) {
+                    currendColorStore.push([last[0], last[1], i])
+                }
+                }
+            } else {
+                let stackLength = fullColorStack.length
+                for(let i = 0; i < stackLength; i ++) {
+                if(fullColorStack[i].join(',') === FRONT.join(',')) {
+                    colorIndex = i
+                    break
+                }
+                }
+            }
+            }
+
+            function init_current_size() {
+            step_count = 1
+            if(RYTHM > 2) {
+                CURRENTSIZE = REALSIZE
+                step_unit   = parseInt(REALSIZE / (RYTHM - 1))
+                step_length = parseInt(REALSIZE / (RYTHM - 1))
+            } else {
+                step_length = step_unit = CURRENTSIZE = REALSIZE
+            }
+            }
+
+            function setup() {
+                let canvas = document.getElementById('canvas')
+                canvas.width = SIZE
+                canvas.height = SIZE
+                ctx = canvas.getContext('2d')
+            init_current_size()
+            growth_flag = true
+            if(COLOROPTION < 9)
+                colorIndex  = 0
+
+            Math.seedrandom(INDEX + 1)
+            if(COLOROPTION > 4 && COLOROPTION < 9) {
+                current_front = FRONT[0]
+            } else {
+                current_front = FRONT
+            }
+            DF = new DifferentialLine(NMAX, FARL * 2, NEARL, FARL)
+
+            let angles = []
+            for(let i = 0; i < INIT_NUM ; i ++ ) {
+                angles.push(Math.random() * TWOPI)
+            }
+            DF.init_circle_segment(MID, MID, INIT_RAD, angles)
+            render = new Render(REALSIZE, BACK, current_front)
+            draw()
+            }
+
+            function draw() {
+            if(COLOROPTION < 5) {
+                current_front = FRONT
+            } else if(COLOROPTION < 9 && COLOROPTION > 4) {
+                current_front = currendColorStore[colorIndex]
+                if(colorIndex >= currendColorStore.length - 1) {
+                colorOperation = 2
+                } 
+                if(colorIndex <= 0) {
+                colorOperation = 1
+                }
+
+                if(colorOperation == 1) {
+                colorIndex ++
+                } else {
+                colorIndex --
+                }
+            } else {
+                current_front = fullColorStack[colorIndex]
+                if(colorIndex >= fullColorStack.length - 1) {
+                colorOperation = 2
+                } 
+                if(colorIndex <= 0) {
+                colorOperation = 1
+                }
+
+                if(colorOperation == 1) {
+                colorIndex ++
+                } else {
+                colorIndex --
+                }
+            }
+            wrap(render)
+                if(SIZE < 800) {
+                    setTimeout( function () {
+                        window.requestAnimationFrame(draw)
+                    }, 1000/10 + parseInt((SIZE - 400) / 10) );
+                } else {
+                    window.requestAnimationFrame(draw)
+                }
+            }
+            function wrap (render) {
+            init_coordinates()
+            let res     = steps(DF)
+            let vert_num = DF.np_get_vert_coordinates(np_vert_coords)
+            let real  = np_vert_coords.slice(0, vert_num)
+
+            if(pulse_start) {
+                real = pulse_path.shift() 
+                if(pulse_path.length >= pulse_num * step_count) {
+                pulse_erase = true
+                pulse_fill = false
+                } else {
+                pulse_erase = false
+                pulse_fill = true
+                }
+            } else {
+                if(growth_flag) {
+                draw_path.push(real)
+                } else {
+                real = draw_path.pop()
+                }
+                if(real == undefined) {
+                setup()
+                return
+                }
+            }
+
+            render.dot(real)
+            return res
+            }
+
+            function init_coordinates() {
+            np_coords       = new Array()
+            np_vert_coords  = new Array()
+            for(let i = 0; i < NMAX; i ++) {
+                np_coords[i] = [0,0,0,0]
+            }
+            for(let i = 0; i < NMAX; i ++) {
+                np_vert_coords[i] = [0,0,0,0]
+            }
+            }
+
+            function steps(df) {
+            if(pulse_start) {
+                if(pulse_path.length == 0) {
+                pulse_start = false
+                if(step_count < RYTHM - 1) {
+                    step_count ++
+                } else {
+                    step_count = 1
+                }
+                step_length = step_unit * step_count
+                }
+            } else {
+                if(growth_flag) {
+                df.optimize_position(STP)
+                spawn(df, NEARL, 0.03)
+                }
+                if(check_step(step_length, df)) {
+                if(step_count < RYTHM - 1) {
+                    pulse_start = true
+                    let drawLength = draw_path.length
+                    for(let i = 1; i <= pulse_num * step_count; i ++ ) {
+                    pulse_path.push(draw_path[drawLength - i])
+                    }
+                    for(let i = pulse_num * step_count; i > 0; i -- ) {
+                    pulse_path.push(draw_path[drawLength - i])
+                    }
+                } else {
+                    if(RYTHM == 1) {
+                        window.cancelAnimationFrame(draw)
+                    }
+
+                    if(growth_flag) {
+                        window.cancelAnimationFrame(draw)
+                    sleep(parseInt(RYTHM + 1) * 1000)
+                        if(SIZE < 800) {
+                            setTimeout( function () {
+                                window.requestAnimationFrame(draw)
+                            }, 1000/10 + parseInt((SIZE - 400) / 10) );
+                        } else {
+                            window.requestAnimationFrame(draw)
+                        }
+                    }
+                    growth_flag = false
+                }
+                }
+            }
+            }
+
+            function check_step(step, df) {
+            CURRENTSIZE = step
+            let result = df.safe_vertex_positions(3 * STP) < 0
+            CURRENTSIZE = REALSIZE
+            return result
+            }
+
+            function sleep(milliseconds) {
+            const date = Date.now();
+            let currentDate = null;
+            do {
+                currentDate = Date.now();
+            } while (currentDate - date < milliseconds);
+            }
+            preload()
+            setup()
+        </script>
+    </canvas>
+</body>
+</html>
