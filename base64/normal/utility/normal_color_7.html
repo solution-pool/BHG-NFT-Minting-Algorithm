@@ -105,7 +105,7 @@ class Zonemap {
 
   constructor(nz) {
       nz = parseInt(nz)
-      const total_zones = nz ** 2
+      const tz = nz ** 2
       this.VZ                     = []
       this.Z                      = []
 
@@ -113,10 +113,10 @@ class Zonemap {
       this.vsize                  = RS
 
       this.nz                     = nz
-      this.total_zones            = nz*nz
-      this.greatest_zone_size     = RS
+      this.tz            = nz*nz
+      this.gzs     = RS
 
-      for (let i = 0; i < this.total_zones ; i ++) {
+      for (let i = 0; i < this.tz ; i ++) {
 
       let z = []
 
@@ -195,8 +195,8 @@ class Zonemap {
       const new_zv = []
       z.ZV = new_zv;
       z.size = new_size
-      if (new_size>this.greatest_zone_size) {
-          this.greatest_zone_size = new_size
+      if (new_size>this.gzs) {
+          this.gzs = new_size
       }
 
       this.Z.push(z)
@@ -658,18 +658,10 @@ function _i(x1, y1, x2, y2, r, nmin = 2, fill=false) {
           if(!gf || pe) {
               ctx.strokeStyle = 'rgb(' + BACK.toString() + ')'
           } else {
-              if(CO < 5) {
-                  ctx.strokeStyle = 'rgb(' + FRONT.toString() + ')'
-              } else {
-                  ctx.strokeStyle = 'rgb(' + cf.toString() + ')'
-              }
-          }
-      } else {
-          if(CO < 5) {
-              ctx.strokeStyle = 'rgb(' + FRONT.toString() + ')'
-          } else {
               ctx.strokeStyle = 'rgb(' + cf.toString() + ')'
           }
+      } else {
+              ctx.strokeStyle = 'rgb(' + cf.toString() + ')'
       }
       ctx.arc(xp * RS, yp * RS, r * RS, 0, TWOPI)
       ctx.stroke()
@@ -747,7 +739,7 @@ let sc = 1, sl, dp = [], pp = [], pn = parseInt(SIZE / 30), ps = false, pe = fal
 let ccs = [], ci = 0, co = 1, fcs = []
 let ctx, ai, CS
 
-function make_color_store() {
+function mcs() {
     let first = FRONT[0]
     let second = FRONT[1]
     let last  = FRONT[2]
@@ -812,8 +804,12 @@ function make_color_store() {
       }
     }
 }
-
-function init_current_size() {
+function setup() {
+  mcs()
+    let canvas = document.getElementById('canvas')
+    canvas.width = SIZE
+    canvas.height = SIZE
+    ctx = canvas.getContext('2d')
   sc = 1
   if(RYTHM > 2) {
     CS = RS
@@ -822,15 +818,6 @@ function init_current_size() {
   } else {
     sl = step_unit = CS = RS
   }
-}
-
-function setup() {
-  make_color_store()
-    let canvas = document.getElementById('canvas')
-    canvas.width = SIZE
-    canvas.height = SIZE
-    ctx = canvas.getContext('2d')
-    init_current_size()
     gf = true
     ci  = 0
         
@@ -870,7 +857,10 @@ function draw() {
 }
 
 function wrap () {
-    init_coordinates()
+  nc = []
+  for(let i = 0; i < NMAX; i ++) {
+    nc[i] = [0,0,0,0]
+  }
     let res     = steps(DF)
     let num     = DF._t(nc)
     let real  = nc.slice(0, num)
@@ -907,17 +897,6 @@ function wrap () {
         _i(x1, y1, x2, y2, ONE / 3)
     }
     return res
-}
-
-function init_coordinates() {
-  nc = []
-  nvc = []
-  for(let i = 0; i < NMAX; i ++) {
-    nc[i] = [0,0,0,0]
-  }
-  for(let i = 0; i < NMAX; i ++) {
-    nvc[i] = [0,0,0,0]
-  }
 }
 
 function steps(df) {
