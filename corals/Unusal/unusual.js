@@ -291,7 +291,6 @@ function draw() {
 
 function wrap (render) {
   init_coordinates()
-  growth_flag = true
   let res     = steps(DF)
   let num     = DF.np_get_edges_coordinates(np_coords)
   let real  = np_coords.slice(0, num)
