@@ -28,7 +28,7 @@ class Zonemap {
 
     constructor(nz) {
       nz = parseInt(nz)
-      const total_zones = nz ** 2
+      const tz = nz ** 2
       this.VZ                     = []
       this.Z                      = []
   
@@ -36,10 +36,10 @@ class Zonemap {
       this.vsize                  = RS
   
       this.nz                     = nz
-      this.total_zones            = nz*nz
-      this.greatest_zone_size     = RS
+      this.tz            = nz*nz
+      this.gzs     = RS
   
-      for (let i = 0; i < this.total_zones ; i ++) {
+      for (let i = 0; i < this.tz ; i ++) {
   
         let z = []
   
@@ -118,8 +118,8 @@ class Zonemap {
       const new_zv = []
         z.ZV = new_zv;
         z.size = new_size
-        if (new_size>this.greatest_zone_size) {
-          this.greatest_zone_size = new_size
+        if (new_size>this.gzs) {
+          this.gzs = new_size
         }
   
         this.Z.push(z)
@@ -172,7 +172,7 @@ class Zonemap {
   
       return -1
     }
-    _ak(x, y, rad, vertices) {
+    _ak(x, y, rad, ve) {
   
       const nz = this.nz
   
@@ -196,7 +196,7 @@ class Zonemap {
   
             if (dx*dx+dy*dy<rad2) {
   
-              vertices[num] = z.ZV[i]
+              ve[num] = z.ZV[i]
               num += 1
             }
           }
@@ -225,7 +225,7 @@ class Zonemap {
   
         this.vnum = 0
   
-        this.edgeNumber = 0
+        this.eN = 0
   
         this.snum = 0
   
@@ -248,7 +248,7 @@ class Zonemap {
     }
     _n(x, y, s, p) {
         if (this._m(x,y)<0) {
-            throw new Error("Vertext outside unit square.")
+            throw new Error("1")
         }
   
         const vnum = this.vnum
@@ -279,19 +279,19 @@ class Zonemap {
     _p(v1,  v2) {
         v1 = parseInt(v1)
         v2 = parseInt(v2)
-        const edgeNumber = this.edgeNumber
+        const eN = this.eN
         if (this._o(v1,v2)<0) {
-            throw new Error("invalid vertex in _p v1, v2, " + v1 + ',' + v2)
+            throw new Error("2")
         }
   
-        this.EV[2*edgeNumber] = v1
-        this.EV[2*edgeNumber+1] = v2
+        this.EV[2*eN] = v1
+        this.EV[2*eN+1] = v2
   
-        _f(v1, edgeNumber, this.VE)
-        _f(v2, edgeNumber, this.VE)
+        _f(v1, eN, this.VE)
+        _f(v2, eN, this.VE)
   
-        this.edgeNumber += 1
-        return edgeNumber
+        this.eN += 1
+        return eN
     }
   
     _q(e1) {
@@ -315,8 +315,8 @@ class Zonemap {
   
     _s(e1) {
   
-        if (e1<0 || e1>this.edgeNumber-1) {
-            throw new Error("invalid edge in _s e1" + e1)
+        if (e1<0 || e1>this.eN-1) {
+            throw new Error("3")
         }
   
         let v1 = this.EV[2*e1]
@@ -337,10 +337,10 @@ class Zonemap {
   
     _t(a) {
   
-        let edgeNumber = this.edgeNumber
+        let eN = this.eN
         let n = 0
   
-        for (let e = 0; e < edgeNumber; e ++ ) {
+        for (let e = 0; e < eN; e ++ ) {
   
             if (this.EV[2*e]>-1) {
   
@@ -362,56 +362,54 @@ class Zonemap {
   
       let nx = this.X[this.EV[2*e1]] - this.X[this.EV[2*e1+1]]
       let ny = this.Y[this.EV[2*e1]] - this.Y[this.EV[2*e1+1]]
-      let length = Math.sqrt(nx*nx+ny*ny)
-  
-      return length
+      return Math.sqrt(nx*nx+ny*ny)
     }
   
-    _w(xys, lock_edges=1) {
+    _w(xys, le=1) {
   
-      let vertices = []
+      let ve = []
       let snum = this.snum
       let xx, yy
   
-      if (lock_edges>0) {
+      if (le>0) {
   
         xx = xys[0][0]
         yy =  xys[0][1]
   
-        vertices.push(this._n(xx,yy,snum,0))
+        ve.push(this._n(xx,yy,snum,0))
   
         for(let i = 1; i < xys.length - 1 ; i ++) {
           xx = xys[i][0]
           yy = xys[i][1]
-          vertices.push(this._n(xx, yy, snum, 1))
+          ve.push(this._n(xx, yy, snum, 1))
         }
   
         xx = xys[xys.length - 1][0]
         yy = xys[xys.length - 1][1]
-        vertices.push(this._n(xx,yy,snum,0))
+        ve.push(this._n(xx,yy,snum,0))
       }
   
       else {
         for (let i = 0 ; i < xys.length; i ++ ) {
           xx = xys[i][0]
           yy = xys[i][1]
-          vertices.push(this._n(xx,yy,snum,1))
+          ve.push(this._n(xx,yy,snum,1))
         }
       }
   
-      for (let i = 0; i < vertices.length - 1; i ++) {
-        this._p(vertices[i],vertices[i+1])
+      for (let i = 0; i < ve.length - 1; i ++) {
+        this._p(ve[i],ve[i+1])
       }
   
       this.snum = snum+1
     }
   
-    _y(e1, minimum_length=-1) {
+    _y(e1, ml=-1) {
       if (this._q(e1)<0) {
-        throw new Error("e1 does not exist")
+        throw new Error("4")
       }
       if (e1<0) {
-        throw new Error("invalid edge in _y e1" + e1)
+        throw new Error("5")
       }
   
       let v1 = this.EV[2*e1]
@@ -420,15 +418,15 @@ class Zonemap {
       let s = this.VS[v1]
   
       if (s<0) {
-        throw new Error("Invalid segment id.")
+        throw new Error("6")
       }
   
-      if (minimum_length>0) {
+      if (ml>0) {
         let dx = this.X[v1] - this.X[v2]
         let dy = this.Y[v1] - this.Y[v2]
   
-        if (dx*dx+dy*dy<minimum_length*minimum_length) {
-          throw new Error("edge too short, e1," + e1)
+        if (dx*dx+dy*dy<ml*ml) {
+          throw new Error("7")
         }
       }
   
@@ -458,7 +456,7 @@ class Zonemap {
     }
   
     _ab() {
-        return this.edgeNumber
+        return this.eN
     }
   }
   class DifferentialLine extends Segments {
@@ -475,9 +473,9 @@ constructor(nmax, zonewidth, nearl, farl) {
 }
 
 _a(step) {
-    let vertices = []
-    const vnumCount = this.vnum
-    for(let v = 0; v < vnumCount; v ++ ) {
+    let ve = []
+    const vc = this.vnum
+    for(let v = 0; v < vc; v ++ ) {
         this.SX[v] = 0.0
         this.SY[v] = 0.0
 
@@ -485,11 +483,11 @@ _a(step) {
             this.X[v],
             this.Y[v],
             this.farl,
-            vertices
+            ve
         )
         this._b(
             v, 
-            vertices,
+            ve,
             num, 
             step,
             this.SX,
@@ -497,7 +495,7 @@ _a(step) {
         )
 
     }
-    for (let v = 0; v < vnumCount ; v ++) {
+    for (let v = 0; v < vc ; v ++) {
         if(this.VA[v] < 0) {
             continue
         }
@@ -506,7 +504,7 @@ _a(step) {
         this.Y[v] = this.Y[v] + this.SY[v]
     }
 
-    for(let v = 0; v < vnumCount; v ++) {
+    for(let v = 0; v < vc; v ++) {
         if(this.VA[v] < 0) {
             continue
         }
@@ -518,7 +516,7 @@ _a(step) {
     }
 }
 
-_b(v, vertices, num, step, sx, sy) {
+_b(v, ve, num, step, sx, sy) {
     if(this.VA[v] < 1) {
         return -1
     }
@@ -526,7 +524,7 @@ _b(v, vertices, num, step, sx, sy) {
     let e1 = this.VE[2*v]
     let e2 = this.VE[2*v + 1]
     let v1, v2
-    // connected vertices to v, v1 and v2
+    // connected ve to v, v1 and v2
     if(this.EV[2*e1] == v) {
         v1 = this.EV[2*e1 + 1]
     } else {
@@ -543,7 +541,7 @@ _b(v, vertices, num, step, sx, sy) {
     let resy = 0
 
     for(let k = 0; k < num; k ++) {
-        let neigh =  vertices[k]
+        let neigh =  ve[k]
         let dx = this.X[v] - this.X[neigh]
         let dy =  this.Y[v] -  this.Y[neigh]
 
@@ -572,10 +570,10 @@ _b(v, vertices, num, step, sx, sy) {
 }
 }
 function _c (df, d, limit) {
-    const edgeNumber  = df._ab()
+    const eN  = df._ab()
     let rnd = []
-    let rndmask = []
-    for(let i = 0; i < edgeNumber ; i ++) {
+    let rm = []
+    for(let i = 0; i < eN ; i ++) {
         rnd.push(Math.random())
     }
 
@@ -585,19 +583,19 @@ function _c (df, d, limit) {
             continue
         }
 
-        rndmask.push(i)
+        rm.push(i)
     }
-    let rndmaskLength = rndmask.length
+    let rml = rm.length
     
-    for(let i = 0 ; i < rndmaskLength; i ++) {
-        let l = df._v(rndmask[i])
+    for(let i = 0 ; i < rml; i ++) {
+        let l = df._v(rm[i])
 
         if(l < d) {
             continue
         }
 
         try {
-            df._y(rndmask[i])
+            df._y(rm[i])
         } 
         catch(e) {
             continue
@@ -734,18 +732,10 @@ function _i(x1, y1, x2, y2, r, nmin = 2, fill=false) {
             if(!gf || pe) {
                 ctx.strokeStyle = 'rgb(' + BACK.toString() + ')'
             } else {
-                if(CO < 5) {
-                    ctx.strokeStyle = 'rgb(' + FRONT.toString() + ')'
-                } else {
                     ctx.strokeStyle = 'rgb(' + cf.toString() + ')'
-                }
             }
         } else {
-            if(CO < 5) {
-                ctx.strokeStyle = 'rgb(' + FRONT.toString() + ')'
-            } else {
                 ctx.strokeStyle = 'rgb(' + cf.toString() + ')'
-            }
         }
         ctx.arc(xp * RS, yp * RS, r * RS, 0, TWOPI)
         ctx.stroke()
@@ -758,81 +748,78 @@ function _j(start, stop, num, endpoint = true) {
     return Array.from({length: num}, (_, i) => start + step * i);
 }
 
-let nc, nvc, gf, DF, render, coloroptions, cf
+let nc, nvc, gf, DF, cf
 let sc = 1, sl, dp = [], pp = [], pn = parseInt(SIZE / 30), ps = false, pe = false, pf = false
 let ccs = [], ci = 0, co = 1, fcs = [], cross
 let ctx, ai, CS
 
-function preload() {
-  make_color_store()
-}
-function make_color_store() {
-    let first = FRONT[0]
-    let second = FRONT[1]
-    let last  = FRONT[2]
+function mcs() {
+    let f = FRONT[0]
+    let s = FRONT[1]
+    let l  = FRONT[2]
 
-    if(first[0] > second[0]) {
-      for(let i = first[0]; i >= second[0]; i --) {
-        ccs.push([i, first[1], first[2]])
+    if(f[0] > s[0]) {
+      for(let i = f[0]; i >= s[0]; i --) {
+        ccs.push([i, f[1], f[2]])
       } 
     } else {
-      for(let i = first[0]; i <= second[0]; i ++) {
-        ccs.push([i, first[1], first[2]])
+      for(let i = f[0]; i <= s[0]; i ++) {
+        ccs.push([i, f[1], f[2]])
       }
     }
 
-    if(first[1] > second[1]) {
-      for(let i = first[1]; i >= second[1]; i --) {
-        ccs.push([second[0], i, first[2]])
+    if(f[1] > s[1]) {
+      for(let i = f[1]; i >= s[1]; i --) {
+        ccs.push([s[0], i, f[2]])
       } 
     } else {
-      for(let i = first[1]; i <= second[1]; i ++) {
-        ccs.push([second[0], i, first[2]])
+      for(let i = f[1]; i <= s[1]; i ++) {
+        ccs.push([s[0], i, f[2]])
       }
     }
 
-    if(first[2] > second[2]) {
-      for(let i = first[2]; i >= second[2]; i --) {
-        ccs.push([second[0], second[1], i])
+    if(f[2] > s[2]) {
+      for(let i = f[2]; i >= s[2]; i --) {
+        ccs.push([s[0], s[1], i])
       } 
     } else {
-      for(let i = first[2]; i <= second[2]; i ++) {
-        ccs.push([second[0], second[1], i])
+      for(let i = f[2]; i <= s[2]; i ++) {
+        ccs.push([s[0], s[1], i])
       }
     }
     
-    if(second[0] > last[0]) {
-      for(let i = second[0]; i >= last[0]; i --) {
-        ccs.push([i, second[1], second[2]])
+    if(s[0] > l[0]) {
+      for(let i = s[0]; i >= l[0]; i --) {
+        ccs.push([i, s[1], s[2]])
       } 
     } else {
-      for(let i = second[0]; i <= last[0]; i ++) {
-        ccs.push([i, second[1], second[2]])
+      for(let i = s[0]; i <= l[0]; i ++) {
+        ccs.push([i, s[1], s[2]])
       }
     }
 
-    if(second[1] > last[1]) {
-      for(let i = second[1]; i >= last[1]; i --) {
-        ccs.push([last[0], i, second[2]])
+    if(s[1] > l[1]) {
+      for(let i = s[1]; i >= l[1]; i --) {
+        ccs.push([l[0], i, s[2]])
       } 
     } else {
-      for(let i = second[1]; i <= last[1]; i ++) {
-        ccs.push([last[0], i, second[2]])
+      for(let i = s[1]; i <= l[1]; i ++) {
+        ccs.push([l[0], i, s[2]])
       }
     }
 
-    if(second[2] > last[2]) {
-      for(let i = second[2]; i >= last[2]; i --) {
-        ccs.push([last[0], last[1], i])
+    if(s[2] > l[2]) {
+      for(let i = s[2]; i >= l[2]; i --) {
+        ccs.push([l[0], l[1], i])
       } 
     } else {
-      for(let i = second[2]; i <= last[2]; i ++) {
-        ccs.push([last[0], last[1], i])
+      for(let i = s[2]; i <= l[2]; i ++) {
+        ccs.push([l[0], l[1], i])
       }
     }
 }
 
-function init_current_size() {
+function ics() {
   sc = 1
   if(RYTHM > 2) {
     CS = RS
@@ -843,7 +830,7 @@ function init_current_size() {
   }
 }
 
-function init_cross_value() {
+function icv() {
   if(RYTHM < 3) {
     cross  = 0.2
   } else {
@@ -852,12 +839,13 @@ function init_cross_value() {
 }
 
 function setup() {
+  mcs()
   let canvas = document.getElementById('canvas')
   canvas.width = SIZE
   canvas.height = SIZE
   ctx = canvas.getContext('2d')
-  init_cross_value()
-  init_current_size()
+  icv()
+  ics()
   gf = true
     ci  = 0
 
@@ -871,7 +859,6 @@ function setup() {
   }
   angles.sort()
   let xys = []
-  let lock_edges
   for (let i = 0; i < angles.length; i ++) {
     let a = angles[i]
     let x = 0.5 + Math.cos(a)*cross
@@ -880,7 +867,7 @@ function setup() {
   }
   xys.sort()
 
-  DF._w(xys, lock_edges=1)
+  DF._w(xys, 1)
   _h()
   draw()
 }
@@ -898,12 +885,15 @@ function draw() {
     } else {
       ci --
     }
-  wrap(render)
+  wrap()
   ai = requestAnimationFrame(draw)
 }
 
-function wrap (render) {
-  init_coordinates()
+function wrap () {
+  nc       = []
+  for(let i = 0; i < NMAX; i ++) {
+    nc[i] = [0,0,0,0]
+  }
   let res     = steps(DF)
   let num     = DF._t(nc)
   let real  = nc.slice(0, num)
@@ -939,17 +929,6 @@ function wrap (render) {
     _i(x1, y1, x2, y2, r, 2, true)
 }
   return res
-}
-
-function init_coordinates() {
-  nc       = new Array()
-  nvc  = new Array()
-  for(let i = 0; i < NMAX; i ++) {
-    nc[i] = [0,0,0,0]
-  }
-  for(let i = 0; i < NMAX; i ++) {
-    nvc[i] = [0,0,0,0]
-  }
 }
 
 function steps(df) {
@@ -1001,14 +980,13 @@ function check_step(step, df) {
   return result
 }
 
-function sleep(milliseconds) {
+function sleep(milliss) {
   const date = Date.now();
   let currentDate = null;
   do {
     currentDate = Date.now();
-  } while (currentDate - date < milliseconds);
+  } while (currentDate - date < milliss);
 }
-preload()
 setup()
   
 </script>
