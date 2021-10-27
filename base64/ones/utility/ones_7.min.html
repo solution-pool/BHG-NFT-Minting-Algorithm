@@ -2,7 +2,7 @@
 <script>
   // Those variables contain the trait of the coral.
 
-const SIZE          = 400       // Growth size
+const SIZE          = 400       // Growth s
 const SPEED         = 1         // Growth speed
 const LOCATION      = 1         // Location
 const CO   = 7         // Coloroption
@@ -24,28 +24,31 @@ const TWOPI         = 2 * Math.PI
 let FRONT = [[255,0,0], [0,255,0], [0,0,255]]
 let BACK = [0,0,0]
 
+const p1=(a)=>{
+  return parseInt(a)
+}
 class Zonemap {
 
     constructor(nz) {
-      nz = parseInt(nz)
-      const total_zones = nz ** 2
+      nz = p1(nz)
+      const tz = nz ** 2
       this.VZ                     = []
       this.Z                      = []
   
-      this.vnum                   = 0
-      this.vsize                  = RS
+      this.vn                   = 0
+      this.vs                  = RS
   
       this.nz                     = nz
-      this.total_zones            = nz*nz
-      this.greatest_zone_size     = RS
+      this.tz            = nz*nz
+      this.gzs     = RS
   
-      for (let i = 0; i < this.total_zones ; i ++) {
+      for (let i = 0; i < this.tz ; i ++) {
   
         let z = []
   
         z.i = i
-        z.size = RS
-        z.count = 0
+        z.s = RS
+        z.co = 0
         z.ZV = []
   
         this.Z[i] = z
@@ -59,30 +62,27 @@ class Zonemap {
       return
     }
     _ad(v1) {
-      v1 = parseInt(v1)
-      let vnum = this.vnum
+      v1 = p1(v1)
+      let vn = this.vn
   
       const x = this.X[v1]
       const y = this.Y[v1]
   
       const z1 = this._ai(x,y)
   
-      this._af(z1, vnum)
-      this.VZ[vnum] = z1
-  
-      const new_vz = []
-      
-      if (this.vnum>=this.vsize-1) {
-        this.VZ = new_vz;
-        this.vsize = this.vsize*2
+      this._af(z1, vn)
+      this.VZ[vn] = z1
+      if (this.vn>=this.vs-1) {
+        this.VZ = [];
+        this.vs = this.vs*2
       }
   
-      this.vnum += 1
-      return vnum
+      this.vn += 1
+      return vn
     }
     _ae(v1) {
   
-      v1 = parseInt(v1)
+      v1 = p1(v1)
       this._ah(this.VZ[v1], v1)
       this.VZ[v1] = -1
   
@@ -90,51 +90,48 @@ class Zonemap {
     }
     _af(z1, v1) {
       
-      z1 = parseInt(z1)
-      v1 = parseInt(v1)
+      z1 = p1(z1)
+      v1 = p1(v1)
   
       let z = this.Z[z1]
       if(z == undefined) {
         z = []
-        z.count = 0
+        z.co = 0
         z.ZV = []
         z.i = 0
-        z.size = SIZE
+        z.s = SIZE
   
         this.Z.push(z)
       }
-      z.ZV[z.count] = v1
-      z.count += 1
+      z.ZV[z.co] = v1
+      z.co += 1
   
-      if (z.count>=z.size-1) {
+      if (z.co>=z.s-1)
         return this._ag(z)
-      }
   
       return 1
     }
     _ag(z) {
   
-      let new_size = z.size*2
-      const new_zv = []
-        z.ZV = new_zv;
-        z.size = new_size
-        if (new_size>this.greatest_zone_size) {
-          this.greatest_zone_size = new_size
-        }
+      let new_s = z.s*2
+        z.ZV = [];
+        z.s = new_s
+        if (new_s>this.gzs)
+          this.gzs = new_s
   
         this.Z.push(z)
       return 1
     }
     _ah(z1, v1) {
-      z1 = parseInt(z1)
-      v1 = parseInt(v1)
+      z1 = p1(z1)
+      v1 = p1(v1)
   
       let z = this.Z[z1]
-      for (let i = 0; i < z.count ;  i ++) {
+      for (let i = 0; i < z.co ;  i ++) {
   
         if (z.ZV[i] == v1) {
-          z.ZV[i] = z.ZV[z.count-1]
-          z.count -= 1
+          z.ZV[i] = z.ZV[z.co-1]
+          z.co -= 1
           return 1
         }
       }
@@ -142,25 +139,18 @@ class Zonemap {
       return -1
     }
     _ai(x, y) {
-  
       const nz = this.nz
-  
-      const i = parseInt(x*nz)
-      const j = parseInt(y*nz)
-      const z = nz*i + j
-  
-      return z
+      return nz*p1(x*nz) + p1(y*nz)
     }
     _aj(v1) {
-      v1 = parseInt(v1)
+      v1 = p1(v1)
       const x = this.X[v1]
       const y = this.Y[v1]
-      const new_z = parseInt(this._ai(x, y))
-      const old_z = parseInt(this.VZ[v1])
+      const new_z = p1(this._ai(x, y))
+      const old_z = p1(this.VZ[v1])
   
-      if (old_z<0) {
+      if (old_z<0)
         return -1
-      }
   
       if (new_z != old_z) {
         this._ah(old_z, v1)
@@ -169,15 +159,14 @@ class Zonemap {
   
         return 1
       }
-  
       return -1
     }
-    _ak(x, y, rad, vertices) {
+    _ak(x, y, rad, ve) {
   
       const nz = this.nz
   
-      const zx = parseInt(x*nz)
-      const zy = parseInt(y*nz)
+      const zx = p1(x*nz)
+      const zy = p1(y*nz)
   
       let num = 0
   
@@ -189,14 +178,14 @@ class Zonemap {
           
           const z = this.Z[a*nz+b]
   
-          for (let i = 0; i < z.count; i ++) {
+          for (let i = 0; i < z.co; i ++) {
   
             const dx = x-this.X[z.ZV[i]]
             const dy = y-this.Y[z.ZV[i]]
   
             if (dx*dx+dy*dy<rad2) {
   
-              vertices[num] = z.ZV[i]
+              ve[num] = z.ZV[i]
               num += 1
             }
           }
@@ -207,7 +196,7 @@ class Zonemap {
   }
   class Segments {
 
-constructor(nmax, zonewidth) {
+constructor(nmax, zw) {
     this.X = []
     _e(this.X, nmax, 0)
     this.Y = []
@@ -223,23 +212,23 @@ constructor(nmax, zonewidth) {
 
     this.nmax = nmax
 
-    this.vnum = 0
+    this.vn = 0
 
-    this.edgeNumber = 0
+    this.eN = 0
 
-    this.snum = 0
+    this.sn = 0
 
-    this.zonewidth = zonewidth
+    this.zw = zw
 
-    this.nz = 1.0 /zonewidth
+    this.nz = 1.0 /zw
 
     if (this.nz<3) {
         this.nz = 1
-        this.zonewidth = 1.0
+        this.zw = 1.0
     }
 
-    this.zonemap = new Zonemap(this.nz)
-    this.zonemap._ac(this.X, this.Y)
+    this.zm = new Zonemap(this.nz)
+    this.zm._ac(this.X, this.Y)
 }
 _m(x,  y) {
     if (x<0 || x>1 || y<0 || y>1) 
@@ -247,77 +236,65 @@ _m(x,  y) {
     return 1
 }
 _n(x, y, s, p) {
-    if (this._m(x,y)<0) {
-        throw new Error("Vertext outside unit square.")
-    }
+    if (this._m(x,y)<0)
+        throw new Error("1")
 
-    const vnum = this.vnum
+    const vn = this.vn
     
-    this.X[vnum] = x
-    this.Y[vnum] = y
-    this.VA[vnum] = 1
-    this.VS[vnum] = s
+    this.X[vn] = x
+    this.Y[vn] = y
+    this.VA[vn] = 1
+    this.VS[vn] = s
 
-    this.zonemap._ad(vnum)
+    this.zm._ad(vn)
 
-    this.vnum = vnum + 1
-    return vnum
+    this.vn = vn + 1
+    return vn
 }
 
 _o(v1,  v2) {
-    if (v1<0 || v1>this.vnum-1 || this.VA[v1]<0) {
+    if (v1<0 || v1>this.vn-1 || this.VA[v1]<0 || v2<0 || v2>this.vn-1 || this.VA[v2]<0)
       return -1
-    }
-
-    if (v2<0 || v2>this.vnum-1 || this.VA[v2]<0) {
-      return -1
-    }
-
     return 1
 }
 
 _p(v1,  v2) {
-    v1 = parseInt(v1)
-    v2 = parseInt(v2)
-    const edgeNumber = this.edgeNumber
-    if (this._o(v1,v2)<0) {
-        throw new Error("invalid vertex in _p v1, v2, " + v1 + ',' + v2)
-    }
+    v1 = p1(v1)
+    v2 = p1(v2)
+    const eN = this.eN
+    if (this._o(v1,v2)<0)
+        throw new Error("2")
 
-    this.EV[2*edgeNumber] = v1
-    this.EV[2*edgeNumber+1] = v2
+    this.EV[2*eN] = v1
+    this.EV[2*eN+1] = v2
 
-    _f(v1, edgeNumber, this.VE)
-    _f(v2, edgeNumber, this.VE)
+    _f(v1, eN, this.VE)
+    _f(v2, eN, this.VE)
 
-    this.edgeNumber += 1
-    return edgeNumber
+    this.eN += 1
+    return eN
 }
 
 _q(e1) {
 
-    if (this.EV[2*e1]>-1 && this.EV[2*e1+1]>-1) {
+    if (this.EV[2*e1]>-1 && this.EV[2*e1+1]>-1)
         return 1
-    }
-    else {
-        return -1
-    }
+      return -1
 }
 
 _r(v1) {
 
     this.VA[v1] = -1
 
-    this.zonemap._ae(v1)
+    this.zm._ae(v1)
 
     return 1
 }
 
 _s(e1) {
 
-    if (e1<0 || e1>this.edgeNumber-1) {
-        throw new Error("invalid edge in _s e1" + e1)
-    }
+    if (e1<0 || e1>this.eN-1)
+        throw new Error("3")
 
     let v1 = this.EV[2*e1]
     let v2 = this.EV[2*e1+1]
@@ -325,22 +302,20 @@ _s(e1) {
     this.EV[2*e1] = -1
     this.EV[2*e1+1] = -1
 
-    if (v1>-1) {
+    if (v1>-1)
       _g(v1, e1, this.VE)
-    }
-    if (v2>-1) {
+    if (v2>-1)
       _g(v2, e1, this.VE)
-    }
 
     return 1
   }
 
 _t(a) {
 
-    let edgeNumber = this.edgeNumber
+    let eN = this.eN
     let n = 0
 
-    for (let e = 0; e < edgeNumber; e ++ ) {
+    for (let e = 0; e < eN; e ++ )
 
         if (this.EV[2*e]>-1) {
 
@@ -353,17 +328,16 @@ _t(a) {
 
             n+=1
         }
-    }
 
     return n
 }
 
 _u(a) {
 
-    let vnum = this.vnum
+    let vn = this.vn
     let n = 0
 
-    for (let v = 0; v < vnum; v ++) {
+    for (let v = 0; v < vn; v ++)
 
         if (this.VA[v]>-1) {
 
@@ -371,7 +345,6 @@ _u(a) {
             a[n][1] = this.Y[v]
             n+=1
         }
-    }
 
     return n
 }
@@ -387,8 +360,8 @@ _v(e1) {
 
 _x(x, y, r, angles) {
   
-  let vertices = []
-  let snum = this.snum
+  let ve = []
+  let sn = this.sn
 
   let num_angles = angles.length
 
@@ -398,41 +371,36 @@ _x(x, y, r, angles) {
     const xx = x + Math.cos(the)*r
     const yy = y + Math.sin(the)*r
 
-    vertices.push(this._n(xx,yy,snum,1))
+    ve.push(this._n(xx,yy,sn,1))
   }
 
-  for (let i = 0; i < vertices.length-1; i ++) {
-    this._p(vertices[i],vertices[i+1])
-  }
+  for (let i = 0; i < ve.length-1; i ++)
+    this._p(ve[i],ve[i+1])
 
-  this._p(vertices[0],vertices[num_angles-1])
-  this.snum = snum+1
+  this._p(ve[0],ve[num_angles-1])
+  this.sn = sn+1
 }
 
-_y(e1, minimum_length=-1) {
-  if (this._q(e1)<0) {
-    throw new Error("e1 does not exist")
-  }
-  if (e1<0) {
-    throw new Error("invalid edge in _y e1" + e1)
-  }
+_y(e1, ml=-1) {
+  if (this._q(e1)<0) 
+    throw new Error("4")
+  if (e1<0) 
+    throw new Error("5")
 
   let v1 = this.EV[2*e1]
   let v2 = this.EV[2*e1+1]
 
   let s = this.VS[v1]
 
-  if (s<0) {
-    throw new Error("Invalid segment id.")
-  }
+  if (s<0)
+    throw new Error("6")
 
-  if (minimum_length>0) {
+  if (ml>0) {
     let dx = this.X[v1] - this.X[v2]
     let dy = this.Y[v1] - this.Y[v2]
 
-    if (dx*dx+dy*dy<minimum_length*minimum_length) {
-      throw new Error("edge too short, e1," + e1)
-    }
+    if (dx*dx+dy*dy<ml*ml)
+      throw new Error("7")
   }
 
   let midx = (this.X[v1] + this.X[v2])*0.5
@@ -449,21 +417,18 @@ _y(e1, minimum_length=-1) {
 
 _z(e1) {
 
-  if (this._q(e1)<0) {
-    throw new Error("e1 does not exist")
-  }
+  if (this._q(e1)<0)
+    throw new Error("8")
 
-  if (e1<0) {
-    throw new Error("invalid edge in _y e1" + e1)
-  }
+  if (e1<0)
+    throw new Error("9")
 
   let va = this.EV[2*e1]
   let vb = this.EV[2*e1+1]
   let e2, e3
 
-  if (va<0 || vb<0) {
-    throw new Error("non-vertex")
-  }
+  if (va<0 || vb<0)
+    throw new Error("0")
   if (this.VE[2*va] == this.VE[2*vb]) {
     e2 = this.VE[2*va+1]
     e3 = this.VE[2*vb+1]
@@ -480,9 +445,8 @@ _z(e1) {
     e2 = this.VE[2*va]
     e3 = this.VE[2*vb]
   }
-  else {
-    throw new Error('edges not connected')
-  }
+  else
+    throw new Error('9')
 
   let v3 = this.EV[2*e1]
   let v4 = this.EV[2*e1+1]
@@ -512,16 +476,15 @@ _z(e1) {
     t += Math.abs(ax*by - ay*bx)*0.5
   }
   
-  if (t<=0) {
-    throw new Error("no curvature.")
-  }
+  if (t<=0)
+    throw new Error("8")
 
   return t
 }
 
 _aa(limit) {
-  let vnum = this.vnum
-  for (let i = 0 ; i < vnum ; i ++) {
+  let vn = this.vn
+  for (let i = 0 ; i < vn ; i ++) {
       if( this.X[i] < ((RS - CS) / 2 / RS + limit) || this.X[i] > (1 - (RS - CS) / 2 / RS - limit) ) {
         return - 1
       }
@@ -533,13 +496,13 @@ _aa(limit) {
 }
 
 _ab() {
-    return this.edgeNumber
+    return this.eN
 }
 }
 class DifferentialLine extends Segments {
 
-constructor(nmax, zonewidth, nearl, farl) {
-    super(nmax, zonewidth)
+constructor(nmax, zw, nearl, farl) {
+    super(nmax, zw)
 
     this.SX = []
     this.SY = []
@@ -550,21 +513,21 @@ constructor(nmax, zonewidth, nearl, farl) {
 }
 
 _a(step) {
-    let vertices = []
-    const vnumCount = this.vnum
-    for(let v = 0; v < vnumCount; v ++ ) {
+    let ve = []
+    const vnCount = this.vn
+    for(let v = 0; v < vnCount; v ++ ) {
         this.SX[v] = 0.0
         this.SY[v] = 0.0
 
-        let num = this.zonemap._ak(
+        let num = this.zm._ak(
             this.X[v],
             this.Y[v],
             this.farl,
-            vertices
+            ve
         )
         this._b(
             v, 
-            vertices,
+            ve,
             num, 
             step,
             this.SX,
@@ -572,69 +535,62 @@ _a(step) {
         )
 
     }
-    for (let v = 0; v < vnumCount ; v ++) {
-        if(this.VA[v] < 0) {
+    for (let v = 0; v < vnCount ; v ++) {
+        if(this.VA[v] < 0)
             continue
-        }
 
         this.X[v] = this.X[v] + this.SX[v]
         this.Y[v] = this.Y[v] + this.SY[v]
     }
 
-    for(let v = 0; v < vnumCount; v ++) {
-        if(this.VA[v] < 0) {
+    for(let v = 0; v < vnCount; v ++) {
+        if(this.VA[v] < 0)
             continue
-        }
         try {
-            this.zonemap._aj(v)
+            this.zm._aj(v)
         }
         catch {
         }
     }
 }
 
-_b(v, vertices, num, step, sx, sy) {
-    if(this.VA[v] < 1) {
+_b(v, ve, num, step, sx, sy) {
+    if(this.VA[v] < 1)
         return -1
-    }
 
     let e1 = this.VE[2*v]
     let e2 = this.VE[2*v + 1]
     let v1, v2
-    // connected vertices to v, v1 and v2
-    if(this.EV[2*e1] == v) {
+    // connected ve to v, v1 and v2
+    if(this.EV[2*e1] == v)
         v1 = this.EV[2*e1 + 1]
-    } else {
+    else
         v1 = this.EV[2*e1]
-    }
 
-    if(this.EV[2*e2] == v) {
+    if(this.EV[2*e2] == v)
         v2 = this.EV[2*e2 + 1]
-    } else {
+    else 
         v2 =  this.EV[2*e2]
-    }
 
     let resx = 0
     let resy = 0
 
     for(let k = 0; k < num; k ++) {
-        let neigh =  vertices[k]
+        let neigh =  ve[k]
         let dx = this.X[v] - this.X[neigh]
         let dy =  this.Y[v] -  this.Y[neigh]
 
         let nrm = Math.sqrt(dx * dx + dy * dy)
 
         if(neigh == v1 || neigh == v2) {
-            if(nrm < this.nearl || nrm <= 0) {
+            if(nrm < this.nearl || nrm <= 0)
                 continue
-            }
 
             resx += -dx/nrm *step
             resy += -dy/nrm * step
         } else {
-            if(nrm > this.farl || nrm <= 0) {
+            if(nrm > this.farl || nrm <= 0)
                 continue
-            }
             resx += dx * (this.farl/nrm -1) *step
             resy += dy * (this.farl/nrm-1)*step
         }
@@ -648,12 +604,12 @@ _b(v, vertices, num, step, sx, sy) {
 }
 
 function _d(df, limit, prob_spawn=1.0) {
-    let edgeNumber = df._ab()
+    let eN = df._ab()
     let ind_curv = []
     let tot_curv = []
     let max_curv = -100000
 
-    for(let e = 0; e < edgeNumber; e ++) {
+    for(let e = 0; e < eN; e ++) {
         try {
             let t = df._z(e)
             ind_curv[e] = t
@@ -671,7 +627,7 @@ function _d(df, limit, prob_spawn=1.0) {
 
         if(r < t / max_curv * prob_spawn) {
             try {
-                df._y(e, minimum_length = limit)
+                df._y(e, ml = limit)
             } catch (e) {
                 
             }
@@ -679,19 +635,17 @@ function _d(df, limit, prob_spawn=1.0) {
     }
 }
 function _e(a, n, v) {
-    for(let i = 0; i < n; i ++) {
+    for(let i = 0; i < n; i ++)
         a[i] = v
-    }
 
     return a
 }
 
 function _f(v, e, ve) {
-    if(ve[2*v] < 0) {
+    if(ve[2*v] < 0) 
         ve[2*v] = e
-    } else {
+   else 
         ve[2*v + 1] = e
-    }
 }
 
 function _g(v, e, ve) {
@@ -798,11 +752,7 @@ function _k(xys) {
         if(!gf || pe) {
             ctx.strokeStyle = 'rgb(' + BACK.toString() + ')'
         } else {
-            if(CO < 5) {
-                ctx.strokeStyle = 'rgb(' + FRONT.toString() + ')'
-            } else {
                 ctx.strokeStyle = 'rgb(' + cf.toString() + ')'
-            }
         }
         ctx.strokeRect(x * RS,y * RS, ONE * RS, ONE * RS)
     }
@@ -822,27 +772,20 @@ function _l(xys) {
         let x = point[0] + direct[0] * random
         let y = point[1] + direct[1] * random
         
-        if(!gf || pe) {
+        if(!gf || pe)
             ctx.strokeStyle = 'rgb(' + BACK.toString() + ')'
-        } else {
-            if(CO < 5) {
-                ctx.strokeStyle = 'rgb(' + FRONT.toString() + ')'
-            } else {
+        else
                 ctx.strokeStyle = 'rgb(' + cf.toString() + ')'
-            }
-        }
+
         ctx.strokeRect(x * RS, y * RS, ONE * RS, ONE * RS);
     }
 }
-let nc, nvc, gf, DF, render, coloroptions, cf
-let sc = 1, sl, dp = [], pp = [], pn = parseInt(SIZE / (RYTHM + 1)), ps = false, pe = false, pf = false
+let nc, nvc, gf, DF, cf
+let sc = 1, sl, dp = [], pp = [], pn = p1(SIZE / (RYTHM + 1)), ps = false, pe = false, pf = false
 let ccs = [], ci = 0, co = 1, fcs = []
 let ctx, ai, CS
 
-function preload() {
-  make_color_store()
-}
-function make_color_store() {
+function mcs() {
     let first = FRONT[0]
     let second = FRONT[1]
     let last  = FRONT[2]
@@ -907,24 +850,20 @@ function make_color_store() {
       }
     }
 }
-
-function init_current_size() {
-  sc = 1
-  if(RYTHM > 2) {
-    CS = RS
-    step_unit   = parseInt(RS / (RYTHM - 1))
-    sl = parseInt(RS / (RYTHM - 1))
-  } else {
-    sl = step_unit = CS = RS
-  }
-}
-
 function setup() {
+  mcs()
   let canvas = document.getElementById('canvas')
   canvas.width = SIZE
   canvas.height = SIZE
   ctx = canvas.getContext('2d')
-  init_current_size()
+  sc = 1
+  if(RYTHM > 2) {
+    CS = RS
+    step_unit   = p1(RS / (RYTHM - 1))
+    sl = p1(RS / (RYTHM - 1))
+  } else {
+    sl = step_unit = CS = RS
+  }
   gf = true
     ci  = 0
 
@@ -961,7 +900,14 @@ function draw() {
 }
 
 function wrap () {
-    init_coordinates()
+  nc       = []
+  nvc  = []
+  for(let i = 0; i < NMAX; i ++) {
+    nc[i] = [0,0,0,0]
+  }
+  for(let i = 0; i < NMAX; i ++) {
+    nvc[i] = [0,0,0,0]
+  }
     let res     = steps(DF)
     let num     = DF._t(nc)
     let real  = nc.slice(0, num)
@@ -995,18 +941,6 @@ function wrap () {
     }
     return res
 }
-
-function init_coordinates() {
-  nc       = new Array()
-  nvc  = new Array()
-  for(let i = 0; i < NMAX; i ++) {
-    nc[i] = [0,0,0,0]
-  }
-  for(let i = 0; i < NMAX; i ++) {
-    nvc[i] = [0,0,0,0]
-  }
-}
-
 function steps(df) {
   if(ps) {
     if(pp.length == 0) {
@@ -1021,7 +955,6 @@ function steps(df) {
   } else {
     if(gf) {
       df._a(STP)
-      // spawn(df, NEARL, 0.03)
       _d(df, NEARL)
     }
     if(check_step(sl, df)) {
@@ -1041,7 +974,7 @@ function steps(df) {
 
         if(gf) {
           cancelAnimationFrame(ai)
-          sleep(parseInt(RYTHM + 1) * 1000)
+          sleep(p1(RYTHM + 1) * 1000)
           ai = requestAnimationFrame(draw)
         }
         gf = false
@@ -1064,7 +997,5 @@ function sleep(milliseconds) {
     currentDate = Date.now();
   } while (currentDate - date < milliseconds);
 }
-  
-preload()
 setup()
   </script>
