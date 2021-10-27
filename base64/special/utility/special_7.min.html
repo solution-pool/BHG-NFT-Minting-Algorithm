@@ -25,7 +25,7 @@ let BACK = [0,0,0], CS
 
 constructor(nz) {
   nz = parseInt(nz)
-  const total_zones = nz ** 2
+  const tz = nz ** 2
   this.VZ                     = []
   this.Z                      = []
 
@@ -33,10 +33,10 @@ constructor(nz) {
   this.vsize                  = RS
 
   this.nz                     = nz
-  this.total_zones            = nz*nz
-  this.greatest_zone_size     = RS
+  this.tz            = nz*nz
+  this.gzs     = RS
 
-  for (let i = 0; i < this.total_zones ; i ++) {
+  for (let i = 0; i < this.tz ; i ++) {
 
     let z = []
 
@@ -115,8 +115,8 @@ _ag(z) {
   const new_zv = []
     z.ZV = new_zv;
     z.size = new_size
-    if (new_size>this.greatest_zone_size) {
-      this.greatest_zone_size = new_size
+    if (new_size>this.gzs) {
+      this.gzs = new_size
     }
 
     this.Z.push(z)
@@ -245,7 +245,7 @@ _m(x,  y) {
 }
 _n(x, y, s, p) {
     if (this._m(x,y)<0) {
-        throw new Error("Vertext outside unit square.")
+        throw new Error("1")
     }
 
     const vnum = this.vnum
@@ -278,7 +278,7 @@ _p(v1,  v2) {
     v2 = parseInt(v2)
     const edgeNumber = this.edgeNumber
     if (this._o(v1,v2)<0) {
-        throw new Error("invalid vertex in _p v1, v2, " + v1 + ',' + v2)
+        throw new Error("2")
     }
 
     this.EV[2*edgeNumber] = v1
@@ -313,7 +313,7 @@ _r(v1) {
 _s(e1) {
 
     if (e1<0 || e1>this.edgeNumber-1) {
-        throw new Error("invalid edge in _s e1" + e1)
+        throw new Error("3")
     }
 
     let v1 = this.EV[2*e1]
@@ -388,7 +388,7 @@ _y(e1, minimum_length=-1) {
     throw new Error("e1 does not exist")
   }
   if (e1<0) {
-    throw new Error("invalid edge in _y e1" + e1)
+    throw new Error("4")
   }
 
   let v1 = this.EV[2*e1]
@@ -397,7 +397,7 @@ _y(e1, minimum_length=-1) {
   let s = this.VS[v1]
 
   if (s<0) {
-    throw new Error("Invalid segment id.")
+    throw new Error("5")
   }
 
   if (minimum_length>0) {
@@ -405,7 +405,7 @@ _y(e1, minimum_length=-1) {
     let dy = this.Y[v1] - this.Y[v2]
 
     if (dx*dx+dy*dy<minimum_length*minimum_length) {
-      throw new Error("edge too short, e1," + e1)
+      throw new Error("6")
     }
   }
 
@@ -703,11 +703,7 @@ function _k(xys) {
         if(!gf || pe) {
             ctx.strokeStyle = 'rgb(' + BACK.toString() + ')'
         } else {
-            if(CO < 5) {
-                ctx.strokeStyle = 'rgb(' + FRONT.toString() + ')'
-            } else {
-                ctx.strokeStyle = 'rgb(' + cf.toString() + ')'
-            }
+            ctx.strokeStyle = 'rgb(' + cf.toString() + ')'
         }
         ctx.strokeRect(x * RS,y * RS, ONE * RS, ONE * RS)
         ctx.stroke()
@@ -720,32 +716,7 @@ let ccs = [], ci = 0, co = 1, fcs = []
 let count_pu = 0
 let ai, ctx
 
-function preload() {
-  make_color_store()
-}
-
-function make_full_color_stack() {
-  for(let i = 0; i <256; i ++) {
-    fcs.push([255, 0, i])
-  }
-  for(let i = 255; i >= 0; i --) {
-    fcs.push([i, 0, 255])
-  }
-  for(let i = 0; i <256; i ++) {
-    fcs.push([0, i, 255])
-  }
-  for(let i = 255; i >= 0; i --) {
-    fcs.push([0, 255, i])
-  }
-  for(let i = 0; i <256; i ++) {
-    fcs.push([i, 255, 0])
-  }
-  for(let i = 255; i >=0; i --) {
-    fcs.push([255, i, 0])
-  }
-}
-
-function make_color_store() {
+function mcs() {
     let first = FRONT[0]
     let second = FRONT[1]
     let last  = FRONT[2]
@@ -812,6 +783,14 @@ function make_color_store() {
 }
 
 function init_current_size() {
+}
+
+function setup() {
+  mcs()
+    let canvas = document.getElementById('canvas')
+    canvas.width = SIZE
+    canvas.height = SIZE
+    ctx = canvas.getContext('2d')
   sc = 1
   if(RYTHM > 2) {
     CS = RS
@@ -820,14 +799,6 @@ function init_current_size() {
   } else {
     sl = step_unit = CS = RS
   }
-}
-
-function setup() {
-    let canvas = document.getElementById('canvas')
-    canvas.width = SIZE
-    canvas.height = SIZE
-    ctx = canvas.getContext('2d')
-  init_current_size()
   gf = true
   if(CO < 9)
     ci  = 0
@@ -953,7 +924,6 @@ function steps(df) {
           sleep(parseInt(RYTHM + 1) * 1000)
 
             if(SIZE < 800) {
-            // frameRate(10 + parseInt((SIZE - 400) / 10)) 
             setTimeout(function () {
                 ai = requestAnimationFrame(draw)
             }, 1000/(10 + parseInt((SIZE - 400) / 10)))
@@ -981,7 +951,5 @@ function sleep(milliseconds) {
     currentDate = Date.now();
   } while (currentDate - date < milliseconds);
 }
-  
-preload()
 setup()
 </script>
