@@ -2,47 +2,50 @@
 <script>
   // Those variables contain the trait of the coral.
 
-const SIZE          = 400       // Growth s
-const SPEED         = 1         // Growth speed
-const LOCATION      = 1         // Location
-const CO   = 7         // Coloroption
-const RYTHM         = 4         // Growth RYTHM
+let SIZE          = 400       // Growth s
+let SPEED         = 1         // Growth speed
+let LOCATION      = 1         // Location
+let CO   = 7         // Coloroption
+let RYTHM         = 4         // Growth RYTHM
 
 // Those are the config value that the algorithm uses. Do not modify this value or the coral will be changed unexpectedly.
 
-const INDEX         = 1
-const RS      = SIZE
-const NMAX          = 10 ** 6
-const ONE           = 1 / RS
-const STP           = 0.1 * ONE
-const NEARL         = 10 * ONE
-const FARL          = 100 * ONE
-const INIT_RAD      = 6 * ONE
-const INIT_NUM      = 3
-const MID           = 0.5
-const TWOPI         = 2 * Math.PI
+let INDEX         = 1
+let RS      = SIZE
+let NMAX          = 10 ** 6
+let ONE           = 1 / RS
+let STP           = 0.1 * ONE
+let NEARL         = 10 * ONE
+let FARL          = 100 * ONE
+let INIT_RAD      = 6 * ONE
+let INIT_NUM      = 3
+let MID           = 0.5
+let TWOPI         = 2 * Math.PI
 let FRONT = [[255,0,0], [0,255,0], [0,0,255]]
 let BACK = [0,0,0]
 
-const p1=(a)=>{
+let p1=(a)=>{
   return parseInt(a)
 }
-class Zonemap {
+let e1=()=>{
+  throw new Error(1)
+}
+class Zm {
 
-    constructor(nz) {
-      nz = p1(nz)
-      const tz = nz ** 2
+    constructor(n) {
+      n = p1(n)
+      let t = n ** 2
       this.VZ                     = []
       this.Z                      = []
   
-      this.vn                   = 0
-      this.vs                  = RS
+      this.v                   = 0
+      this.s                  = RS
   
-      this.nz                     = nz
-      this.tz            = nz*nz
-      this.gzs     = RS
+      this.n                     = n
+      this.t            = n*n
+      this.g     = RS
   
-      for (let i = 0; i < this.tz ; i ++) {
+      for (let i = 0; i < this.t ; i ++) {
   
         let z = []
   
@@ -54,41 +57,41 @@ class Zonemap {
         this.Z[i] = z
       }
     }
-    _ac(X,Y) {
+    a2(X,Y) {
   
       this.X = X
       this.Y = Y
   
       return
     }
-    _ad(v1) {
+    a3(v1) {
       v1 = p1(v1)
-      let vn = this.vn
+      let v = this.v
   
-      const x = this.X[v1]
-      const y = this.Y[v1]
+      let x = this.X[v1]
+      let y = this.Y[v1]
   
-      const z1 = this._ai(x,y)
+      let z1 = this.a8(x,y)
   
-      this._af(z1, vn)
-      this.VZ[vn] = z1
-      if (this.vn>=this.vs-1) {
+      this.a5(z1, v)
+      this.VZ[v] = z1
+      if (this.v>=this.s-1) {
         this.VZ = [];
-        this.vs = this.vs*2
+        this.s = this.s*2
       }
   
-      this.vn += 1
-      return vn
+      this.v += 1
+      return v
     }
-    _ae(v1) {
+    a4(v1) {
   
       v1 = p1(v1)
-      this._ah(this.VZ[v1], v1)
+      this.a7(this.VZ[v1], v1)
       this.VZ[v1] = -1
   
       return 1
     }
-    _af(z1, v1) {
+    a5(z1, v1) {
       
       z1 = p1(z1)
       v1 = p1(v1)
@@ -107,22 +110,22 @@ class Zonemap {
       z.co += 1
   
       if (z.co>=z.s-1)
-        return this._ag(z)
+        return this.a6(z)
   
       return 1
     }
-    _ag(z) {
+    a6(z) {
   
       let new_s = z.s*2
         z.ZV = [];
         z.s = new_s
-        if (new_s>this.gzs)
-          this.gzs = new_s
+        if (new_s>this.g)
+          this.g = new_s
   
         this.Z.push(z)
       return 1
     }
-    _ah(z1, v1) {
+    a7(z1, v1) {
       z1 = p1(z1)
       v1 = p1(v1)
   
@@ -138,50 +141,50 @@ class Zonemap {
   
       return -1
     }
-    _ai(x, y) {
-      const nz = this.nz
-      return nz*p1(x*nz) + p1(y*nz)
+    a8(x, y) {
+      let n = this.n
+      return n*p1(x*n) + p1(y*n)
     }
-    _aj(v1) {
+    a9(v1) {
       v1 = p1(v1)
-      const x = this.X[v1]
-      const y = this.Y[v1]
-      const new_z = p1(this._ai(x, y))
-      const old_z = p1(this.VZ[v1])
+      let x = this.X[v1]
+      let y = this.Y[v1]
+      let new_z = p1(this.a8(x, y))
+      let old_z = p1(this.VZ[v1])
   
       if (old_z<0)
         return -1
   
       if (new_z != old_z) {
-        this._ah(old_z, v1)
-        this._af(new_z, v1)
+        this.a7(old_z, v1)
+        this.a5(new_z, v1)
         this.VZ[v1] = new_z
   
         return 1
       }
       return -1
     }
-    _ak(x, y, rad, ve) {
+    a0(x, y, rad, ve) {
   
-      const nz = this.nz
+      let n = this.n
   
-      const zx = p1(x*nz)
-      const zy = p1(y*nz)
+      let zx = p1(x*n)
+      let zy = p1(y*n)
   
       let num = 0
   
-      const rad2 = rad*rad
+      let rad2 = rad*rad
   
   
-      for (let a = Math.max(zx-1,0); a < Math.min(zx+2,nz); a ++) {
-        for (let b = Math.max(zy-1,0); b < Math.min(zy+2,nz); b ++ ) {
+      for (let a = Math.max(zx-1,0); a < Math.min(zx+2,n); a ++) {
+        for (let b = Math.max(zy-1,0); b < Math.min(zy+2,n); b ++ ) {
           
-          const z = this.Z[a*nz+b]
+          let z = this.Z[a*n+b]
   
           for (let i = 0; i < z.co; i ++) {
   
-            const dx = x-this.X[z.ZV[i]]
-            const dy = y-this.Y[z.ZV[i]]
+            let dx = x-this.X[z.ZV[i]]
+            let dy = y-this.Y[z.ZV[i]]
   
             if (dx*dx+dy*dy<rad2) {
   
@@ -194,7 +197,7 @@ class Zonemap {
       return num
     }
   }
-  class Segments {
+  class Se {
 
 constructor(nmax, zw) {
     this.X = []
@@ -212,7 +215,7 @@ constructor(nmax, zw) {
 
     this.nmax = nmax
 
-    this.vn = 0
+    this.v = 0
 
     this.eN = 0
 
@@ -220,15 +223,15 @@ constructor(nmax, zw) {
 
     this.zw = zw
 
-    this.nz = 1.0 /zw
+    this.n = 1.0 /zw
 
-    if (this.nz<3) {
-        this.nz = 1
+    if (this.n<3) {
+        this.n = 1
         this.zw = 1.0
     }
 
-    this.zm = new Zonemap(this.nz)
-    this.zm._ac(this.X, this.Y)
+    this.zm = new Zm(this.n)
+    this.zm.a2(this.X, this.Y)
 }
 _m(x,  y) {
     if (x<0 || x>1 || y<0 || y>1) 
@@ -237,23 +240,23 @@ _m(x,  y) {
 }
 _n(x, y, s, p) {
     if (this._m(x,y)<0)
-        throw new Error("1")
+        el()
 
-    const vn = this.vn
+    let v = this.v
     
-    this.X[vn] = x
-    this.Y[vn] = y
-    this.VA[vn] = 1
-    this.VS[vn] = s
+    this.X[v] = x
+    this.Y[v] = y
+    this.VA[v] = 1
+    this.VS[v] = s
 
-    this.zm._ad(vn)
+    this.zm.a3(v)
 
-    this.vn = vn + 1
-    return vn
+    this.v = v + 1
+    return v
 }
 
 _o(v1,  v2) {
-    if (v1<0 || v1>this.vn-1 || this.VA[v1]<0 || v2<0 || v2>this.vn-1 || this.VA[v2]<0)
+    if (v1<0 || v1>this.v-1 || this.VA[v1]<0 || v2<0 || v2>this.v-1 || this.VA[v2]<0)
       return -1
     return 1
 }
@@ -261,9 +264,9 @@ _o(v1,  v2) {
 _p(v1,  v2) {
     v1 = p1(v1)
     v2 = p1(v2)
-    const eN = this.eN
+    let eN = this.eN
     if (this._o(v1,v2)<0)
-        throw new Error("2")
+        el()
 
     this.EV[2*eN] = v1
     this.EV[2*eN+1] = v2
@@ -272,7 +275,6 @@ _p(v1,  v2) {
     _f(v2, eN, this.VE)
 
     this.eN += 1
-    return eN
 }
 
 _q(e1) {
@@ -281,20 +283,10 @@ _q(e1) {
         return 1
       return -1
 }
-
-_r(v1) {
-
-    this.VA[v1] = -1
-
-    this.zm._ae(v1)
-
-    return 1
-}
-
 _s(e1) {
 
     if (e1<0 || e1>this.eN-1)
-        throw new Error("3")
+        el()
 
     let v1 = this.EV[2*e1]
     let v2 = this.EV[2*e1+1]
@@ -306,8 +298,6 @@ _s(e1) {
       _g(v1, e1, this.VE)
     if (v2>-1)
       _g(v2, e1, this.VE)
-
-    return 1
   }
 
 _t(a) {
@@ -334,10 +324,10 @@ _t(a) {
 
 _u(a) {
 
-    let vn = this.vn
+    let v = this.v
     let n = 0
 
-    for (let v = 0; v < vn; v ++)
+    for (let v = 0; v < v; v ++)
 
         if (this.VA[v]>-1) {
 
@@ -353,9 +343,7 @@ _v(e1) {
 
   let nx = this.X[this.EV[2*e1]] - this.X[this.EV[2*e1+1]]
   let ny = this.Y[this.EV[2*e1]] - this.Y[this.EV[2*e1+1]]
-  let length = Math.sqrt(nx*nx+ny*ny)
-
-  return length
+  return Math.sqrt(nx*nx+ny*ny)
 }
 
 _x(x, y, r, angles) {
@@ -366,10 +354,10 @@ _x(x, y, r, angles) {
   let num_angles = angles.length
 
   for (let i = 0; i < num_angles; i ++) {
-    const the = angles[i]
+    let the = angles[i]
 
-    const xx = x + Math.cos(the)*r
-    const yy = y + Math.sin(the)*r
+    let xx = x + Math.cos(the)*r
+    let yy = y + Math.sin(the)*r
 
     ve.push(this._n(xx,yy,sn,1))
   }
@@ -383,9 +371,9 @@ _x(x, y, r, angles) {
 
 _y(e1, ml=-1) {
   if (this._q(e1)<0) 
-    throw new Error("4")
+    el()
   if (e1<0) 
-    throw new Error("5")
+    el()
 
   let v1 = this.EV[2*e1]
   let v2 = this.EV[2*e1+1]
@@ -393,14 +381,14 @@ _y(e1, ml=-1) {
   let s = this.VS[v1]
 
   if (s<0)
-    throw new Error("6")
+    el()
 
   if (ml>0) {
     let dx = this.X[v1] - this.X[v2]
     let dy = this.Y[v1] - this.Y[v2]
 
     if (dx*dx+dy*dy<ml*ml)
-      throw new Error("7")
+      el()
   }
 
   let midx = (this.X[v1] + this.X[v2])*0.5
@@ -411,24 +399,22 @@ _y(e1, ml=-1) {
 
   this._p(v1,v3)
   this._p(v2,v3)
-
-  return 1
 }
 
 _z(e1) {
 
   if (this._q(e1)<0)
-    throw new Error("8")
+    el()
 
   if (e1<0)
-    throw new Error("9")
+    el()
 
   let va = this.EV[2*e1]
   let vb = this.EV[2*e1+1]
   let e2, e3
 
   if (va<0 || vb<0)
-    throw new Error("0")
+    el()
   if (this.VE[2*va] == this.VE[2*vb]) {
     e2 = this.VE[2*va+1]
     e3 = this.VE[2*vb+1]
@@ -446,7 +432,7 @@ _z(e1) {
     e3 = this.VE[2*vb]
   }
   else
-    throw new Error('9')
+    el()
 
   let v3 = this.EV[2*e1]
   let v4 = this.EV[2*e1+1]
@@ -477,14 +463,14 @@ _z(e1) {
   }
   
   if (t<=0)
-    throw new Error("8")
+    el()
 
   return t
 }
 
-_aa(limit) {
-  let vn = this.vn
-  for (let i = 0 ; i < vn ; i ++) {
+a1(limit) {
+  let v = this.v
+  for (let i = 0 ; i < v ; i ++) {
       if( this.X[i] < ((RS - CS) / 2 / RS + limit) || this.X[i] > (1 - (RS - CS) / 2 / RS - limit) ) {
         return - 1
       }
@@ -499,7 +485,7 @@ _ab() {
     return this.eN
 }
 }
-class DifferentialLine extends Segments {
+class Di extends Se {
 
 constructor(nmax, zw, nearl, farl) {
     super(nmax, zw)
@@ -514,12 +500,12 @@ constructor(nmax, zw, nearl, farl) {
 
 _a(step) {
     let ve = []
-    const vnCount = this.vn
-    for(let v = 0; v < vnCount; v ++ ) {
-        this.SX[v] = 0.0
-        this.SY[v] = 0.0
+    let vCount = this.v
+    for(let v = 0; v < vCount; v ++ ) {
+        this.SX[v] = 0
+        this.SY[v] = 0
 
-        let num = this.zm._ak(
+        let num = this.zm.a0(
             this.X[v],
             this.Y[v],
             this.farl,
@@ -535,7 +521,7 @@ _a(step) {
         )
 
     }
-    for (let v = 0; v < vnCount ; v ++) {
+    for (let v = 0; v < vCount ; v ++) {
         if(this.VA[v] < 0)
             continue
 
@@ -543,11 +529,11 @@ _a(step) {
         this.Y[v] = this.Y[v] + this.SY[v]
     }
 
-    for(let v = 0; v < vnCount; v ++) {
+    for(let v = 0; v < vCount; v ++) {
         if(this.VA[v] < 0)
             continue
         try {
-            this.zm._aj(v)
+            this.zm.a9(v)
         }
         catch {
         }
@@ -618,18 +604,11 @@ function _d(df, limit, prob_spawn=1.0) {
         } catch (e) {
         }
     }
-    let ne = ind_curv.length
-
-    for(let i = 0; i < ne; i ++) {
-        let r = Math.random()
-        let e = i
-        let t = ind_curv[e]
-
-        if(r < t / max_curv * prob_spawn) {
+    for(let i = 0; i < ind_curv.length; i ++) {
+        if(Math.random() <ind_curv[i] / max_curv * prob_spawn) {
             try {
-                df._y(e, ml = limit)
+                df._y(i, limit)
             } catch (e) {
-                
             }
         }
     }
@@ -759,7 +738,7 @@ function _k(xys) {
 }
 
 function _l(xys) {
-    const xyLength = xys.length
+    let xyLength = xys.length
     
     for(let i = 0; i < xyLength ; i ++ ) {
         let point = xys[i]
@@ -785,7 +764,7 @@ let sc = 1, sl, dp = [], pp = [], pn = p1(SIZE / (RYTHM + 1)), ps = false, pe = 
 let ccs = [], ci = 0, co = 1, fcs = []
 let ctx, ai, CS
 
-function mcs() {
+function m1() {
     let first = FRONT[0]
     let second = FRONT[1]
     let last  = FRONT[2]
@@ -850,8 +829,8 @@ function mcs() {
       }
     }
 }
-function setup() {
-  mcs()
+function _se() {
+  m1()
   let canvas = document.getElementById('canvas')
   canvas.width = SIZE
   canvas.height = SIZE
@@ -869,7 +848,7 @@ function setup() {
 
   Math.seedrandom(INDEX)
     cf = FRONT[0]
-  DF = new DifferentialLine(NMAX, FARL * 2, NEARL, FARL)
+  DF = new Di(NMAX, FARL * 2, NEARL, FARL)
 
   let angles = []
   for(let i = 0; i < INIT_NUM ; i ++ ) {
@@ -878,10 +857,10 @@ function setup() {
   angles.sort()
   DF._x(MID, MID, FARL * 0.2 * (SIZE / 400), angles)
   _h()
-  draw()
+  d1()
 }
 
-function draw() {
+function d1() {
     cf = ccs[ci]
     if(ci >= ccs.length - 1) {
       co = 2
@@ -895,20 +874,18 @@ function draw() {
     } else {
       ci --
     }
-  wrap()
-  ai = requestAnimationFrame(draw)
+  w1()
+  ai = requestAnimationFrame(d1)
 }
 
-function wrap () {
+function w1 () {
   nc       = []
   nvc  = []
   for(let i = 0; i < NMAX; i ++) {
     nc[i] = [0,0,0,0]
-  }
-  for(let i = 0; i < NMAX; i ++) {
     nvc[i] = [0,0,0,0]
   }
-    let res     = steps(DF)
+    let res     = s1(DF)
     let num     = DF._t(nc)
     let real  = nc.slice(0, num)
     if(ps) {
@@ -927,7 +904,7 @@ function wrap () {
         real = dp.pop()
       }
       if(real == undefined) {
-        setup()
+        _se()
         return
       }
     }
@@ -941,7 +918,7 @@ function wrap () {
     }
     return res
 }
-function steps(df) {
+function s1(df) {
   if(ps) {
     if(pp.length == 0) {
       ps = false
@@ -957,15 +934,15 @@ function steps(df) {
       df._a(STP)
       _d(df, NEARL)
     }
-    if(check_step(sl, df)) {
+    if(c1(sl, df)) {
       if(sc < RYTHM - 1) {
         ps = true
-        let drawLength = dp.length
+        let d1Length = dp.length
         for(let i = 1; i <= pn * sc; i ++ ) {
-          pp.push(dp[drawLength - i])
+          pp.push(dp[d1Length - i])
         }
         for(let i = pn * sc; i > 0; i -- ) {
-          pp.push(dp[drawLength - i])
+          pp.push(dp[d1Length - i])
         }
       } else {
         if(RYTHM == 1) {
@@ -974,8 +951,8 @@ function steps(df) {
 
         if(gf) {
           cancelAnimationFrame(ai)
-          sleep(p1(RYTHM + 1) * 1000)
-          ai = requestAnimationFrame(draw)
+          _sl(p1(RYTHM + 1) * 1000)
+          ai = requestAnimationFrame(d1)
         }
         gf = false
       }
@@ -983,19 +960,19 @@ function steps(df) {
   }
 }
 
-function check_step(step, df) {
+function c1(step, df) {
   CS = step
-  let result = df._aa(3 * STP) < 0
+  let result = df.a1(3 * STP) < 0
   CS = RS
   return result
 }
 
-function sleep(milliseconds) {
-  const date = Date.now();
+function _sl(milliseconds) {
+  let date = Date.now();
   let currentDate = null;
   do {
     currentDate = Date.now();
   } while (currentDate - date < milliseconds);
 }
-setup()
+_se()
   </script>
